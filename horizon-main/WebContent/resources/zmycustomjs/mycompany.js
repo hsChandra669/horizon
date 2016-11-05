@@ -57,7 +57,7 @@ function loadCompanies(){
 			  $.each(data, function(idx, obj) {
 				  $('#companyData tbody').append(
 						  "<tr>" +
-						  "<td>" +obj.address+ "</td>" +
+						  "<td>" +obj.companyName+ "</td>" +
 						  "<td>" +obj.city+ "</td>" +
 						  "<td>" +obj.createTS+ "</td>" +
 						  "<td>" +obj.lastUpdateTS+ "</td>" +
