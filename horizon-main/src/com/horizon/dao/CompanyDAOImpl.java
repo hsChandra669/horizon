@@ -33,15 +33,15 @@ public class CompanyDAOImpl implements CompanyDAO{
 	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
 		return namedParameterJdbcTemplate;
 	}
-	private static final String GET_ALL_QUERY = "SELECT COMPANY_ID, ADDRESS, CITY, ENABLED, CREATED_BY,"
+	private static final String GET_ALL_QUERY = "SELECT COMPANY_ID, NAME, ADDRESS, CITY, ENABLED, CREATED_BY,"
 			+ " CREATED_ON, LAST_UPDATED_ON from company";
 
 	private static final String GET_BY_NAME_QUERY = "SELECT company_id, company_name, location, create_ts, last_update_ts from company"
 			+ "  where company_name = :companyName";
 
 	private static final String INSERT_QUERY = "INSERT INTO company "
-			+ " (ADDRESS, CITY, ENABLED, CREATED_BY, CREATED_ON, LAST_UPDATED_ON) "
-			+ "VALUES(:address, :city, :enabled, :createdBy, :createTS, :lastUpdateTS)";
+			+ " (ADDRESS, NAME, CITY, ENABLED, CREATED_BY, CREATED_ON, LAST_UPDATED_ON) "
+			+ "VALUES(:address, :name, :city, :enabled, :createdBy, :createTS, :lastUpdateTS)";
 
 	@Override
 	public void create(Company company) {
@@ -49,6 +49,7 @@ public class CompanyDAOImpl implements CompanyDAO{
 		logger.info(methodName + company);
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("address", company.getAddress());
+		parameters.put("name", company.getCompanyName());
 		parameters.put("city", company.getCity());
 		parameters.put("enabled", company.getEnabled());
 		parameters.put("createdBy", company.getUserID());

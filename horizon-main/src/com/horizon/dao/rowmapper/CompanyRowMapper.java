@@ -39,6 +39,7 @@ public class CompanyRowMapper implements RowMapper<Company> {
 		Company company = new Company();
 
 		company.setCompanyID(rs.getInt("COMPANY_ID"));
+		company.setCompanyName(rs.getString("NAME"));
 		company.setAddress(rs.getString("ADDRESS"));
 		company.setCity(rs.getString("CITY"));
 		company.setEnabled(rs.getInt("ENABLED"));

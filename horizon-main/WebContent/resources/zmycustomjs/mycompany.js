@@ -25,6 +25,22 @@ $(function () {
 
     		$('#createcompanysubmit').on( 'click', function () {
     			//$('#companyCreateModal').modal('toggle');
+    			var companyName = $("#companyName").val();
+    			var companyLoc = $("#companyLocation").val();
+
+    			var company = {
+    				    'companyName': companyName,
+    				    'city': companyLoc
+    				}
+
+    			var request = $.ajax({
+    				 url: "/shop/companies/create",
+    				  method: "POST",
+    				  contentType: "application/json",
+    			       dataType: "json",
+    				  data: JSON.stringify(company),
+    				});
+
     		});
 
   });

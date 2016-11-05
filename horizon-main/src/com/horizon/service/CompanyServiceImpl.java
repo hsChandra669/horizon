@@ -16,6 +16,8 @@ public class CompanyServiceImpl implements CompanyService{
 
 	@Override
 	public Company createCompany(Company company) {
+		company.setEnabled(1);
+		company.setUserID(1);
 		companyDao.create(company);
 		//Company dbComp = companyDao.getByCompanyName(company.getCompanyName());
 		return company;

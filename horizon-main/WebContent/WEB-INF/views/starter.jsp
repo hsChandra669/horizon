@@ -328,6 +328,7 @@ desired effect
 
   <!-- Content Wrapper. Contains page content -->
 
+<!--   ======================================================================================================================= -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -336,14 +337,16 @@ desired effect
         <small>Company Details</small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
         <li><a href="#">Tables</a></li>
         <li class="active">Data tables</li>
       </ol>
     </section>
 
+
     <!-- Main content -->
     <section class="content">
+
       <div class="row">
         <div class="col-xs-12">
 
@@ -373,8 +376,8 @@ desired effect
             <form role="form">
               <div class="box-body">
                 <div class="form-group">
-                  <label for="companyAddress">Address</label>
-                  <input type="text" class="form-control" id="companyAddress" placeholder="Enter Company Address">
+                  <label for="companyName">Name</label>
+                  <input type="text" class="form-control" id="companyName" placeholder="Enter Company Address">
                 </div>
                 <div class="form-group">
                   <label for="companyLocation">Location</label>
@@ -474,7 +477,7 @@ desired effect
 
                 <thead>
                 <tr>
-                  <th>Address</th>
+                  <th>Name</th>
                   <th>City</th>
                   <th>Creation Time</th>
                   <th>Last Updated Time</th>
@@ -495,7 +498,7 @@ desired effect
 
                 <tfoot>
                 <tr>
-                   <th>Address</th>
+                   <th>Name</th>
                   <th>City</th>
                   <th>Creation Time</th>
                   <th>Last Updated Time</th>
@@ -509,16 +512,14 @@ desired effect
           <!-- /.box -->
         </div>
         <!-- /.col -->
-      </div>
+
       <!-- /.row -->
     </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
 
-
-
-  <!-- /.content-wrapper -->
+  <!--   ======================================================================================================================= -->
 
   <!-- Main Footer -->
   <footer class="main-footer">

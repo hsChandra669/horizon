@@ -3,6 +3,7 @@ package com.horizon.model;
 public class Company {
 
 	private long companyID;
+	private String companyName;
 	private String address;
 	private String city;
 	private int enabled;
@@ -14,14 +15,23 @@ public class Company {
 
 	}
 
-	public Company(int companyID, String address, String city, int enabled, int userID, String createTS, String lastUpdateTS) {
+	public Company(int companyID, String companyName, String address, String city, int enabled, int userID, String createTS, String lastUpdateTS) {
 		this.companyID = companyID;
+		this.companyName = companyName;
 		this.address = address;
 		this.city = city;
 		this.enabled = enabled;
 		this.userID = userID;
 		this.createTS = createTS;
 		this.lastUpdateTS = lastUpdateTS;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
 	public String getAddress() {
@@ -78,6 +88,13 @@ public class Company {
 
 	public void setLastUpdateTS(String lastUpdateTS) {
 		this.lastUpdateTS = lastUpdateTS;
+	}
+
+	@Override
+	public String toString() {
+		return "Company [companyID=" + companyID + ", companyName=" + companyName + ", address=" + address + ", city="
+				+ city + ", enabled=" + enabled + ", userID=" + userID + ", createTS=" + createTS + ", lastUpdateTS="
+				+ lastUpdateTS + "]";
 	}
 
 
