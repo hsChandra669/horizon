@@ -2,4 +2,4 @@
 
 one more line
 
-second line
+second line.
