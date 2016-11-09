@@ -1,4 +1,5 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -6,6 +7,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 -->
 <html>
 <head>
+<script type="text/javascript">
+var contextPath='<%=request.getContextPath()%>';
+</script>
+
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>AdminLTE 2 | Starter</title>
@@ -353,16 +358,19 @@ desired effect
 
 <!-- TODO contents starts from here -->
 
+
     <!--  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button> -->
   <!-- Modal -->
-  <div class="modal fade" id="companyCreateModal" role="dialog">
+
+  <!-- ALL forms should go inside this -->
+  <div class="modal fade" id="formeModal" data-backdrop="static" role="dialog">
     <div class="modal-dialog">
 
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Create Company Details</h4>
+          <h4 class="modal-title" id="formModal-title"></h4>
         </div>
 
          <!--  <p>Some text in the modal.</p> -->
@@ -372,12 +380,22 @@ desired effect
               <h3 class="box-title">Quick Example</h3>
             </div> -->
             <!-- /.box-header -->
-            <!-- form start -->
-            <form role="form">
+
+            <!-- create company form start -->
+            <form role="form" id="createCompanyForm" class="inputForm">
               <div class="box-body">
+
+              <!-- holds validation error -->
+              <div class="FormvalidationError">
+              <!-- <span style="display:block;">one</span>-->
+              </div>
                 <div class="form-group">
                   <label for="companyName">Name</label>
-                  <input type="text" class="form-control" id="companyName" placeholder="Enter Company Address">
+                  <input type="text" class="form-control" id="companyName" placeholder="Enter Company name">
+                </div>
+                 <div class="form-group">
+                  <label for="companyAddress">Address</label>
+                  <input type="text" class="form-control" id="companyAddress" placeholder="Enter Company Address">
                 </div>
                 <div class="form-group">
                   <label for="companyLocation">Location</label>
@@ -388,63 +406,41 @@ desired effect
               <!-- /.box-body -->
 
               <div class="box-footer">
-                <button type="button" id="createcompanysubmit" class="btn btn-primary">Submit</button>
+                <button type="button" id="createcompanysubmitBtn" class="btn btn-primary">Submit</button>
                <!--  <button type="button" class="btn btn-primary">Close</button> -->
               </div>
             </form>
-          </div>
+             <!-- create company form end  -->
 
-
-        </div>
-        <!-- TODO -->
-       <!--  <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div> -->
-      </div>
-
-    </div>
-  </div>
-
-
-<div class="modal fade" id="companyEditModal" role="dialog">
-    <div class="modal-dialog">
-
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Edit Company Details</h4>
-        </div>
-        <div class="modal-body">
-
-
-         <!--  <p>Some text in the modal.</p> -->
-           <div class="box box-primary">
-        <!--    TODO i commented -->
-            <!-- <div class="box-header with-border">
-              <h3 class="box-title">Quick Example</h3>
-            </div> -->
-            <!-- /.box-header -->
-            <!-- form start -->
-            <form role="form">
+               <!-- edit company form start -->
+            <form role="form" id="editCompanyForm" class="inputForm">
               <div class="box-body">
+               <div class="FormvalidationError">
+              </div>
                 <div class="form-group">
+                  <label for="Name">Name</label>
+                  <input type="text" class="form-control" id="editFormCompNameId" placeholder="Enter Company Address" readonly>
+                </div>
+                 <div class="form-group">
                   <label for="Address">Address</label>
-                  <input type="text" class="form-control" id="Address" placeholder="Enter Company Address">
+                  <input type="text" class="form-control" id="editFormCompAddressId" placeholder="Enter Company location">
                 </div>
                 <div class="form-group">
                   <label for="City">Location</label>
-                  <input type="text" class="form-control" id="City" placeholder="Enter Company location">
+                  <input type="text" class="form-control" id="editFormCompCityId" placeholder="Enter Company location">
                 </div>
 
               </div>
               <!-- /.box-body -->
 
               <div class="box-footer">
-                <button type="button" class="btn btn-primary">Submit</button>
+                <button type="button" id="editcompanysubmitBtn" class="btn btn-primary">Submit</button>
                <!--  <button type="button" class="btn btn-primary">Close</button> -->
               </div>
             </form>
+             <!-- edit company form end  -->
+
+
           </div>
 
 
@@ -457,7 +453,6 @@ desired effect
 
     </div>
   </div>
-
 
 
           <!-- /.box -->
@@ -466,9 +461,10 @@ desired effect
             <div class="box-header">
               <!-- <h3 class="box-title">Data Table With Full Features</h3> -->
               <div class="box-footer clearfix no-border">
-              <button style="margin-right: 5px;" type="button" class="btn btn-default pull-left" data-toggle="modal" data-target="#companyCreateModal"><i class="fa fa-plus"></i> Add item</button>
-              <button style="margin-right: 5px;" type="button" id="companyEditBtn" class="btn btn-default pull-left" data-toggle="modal" data-target="#companyEditModal"><i class="fa fa-pencil"></i> Edit item</button>
-              <button type="button" class="btn btn-default pull-left"><i class="fa  fa-trash"></i> Delete item</button>
+             <!--  <button style="margin-right: 5px;" type="button" class="btn btn-default pull-left" data-toggle="modal" data-target="#companyCreateModal"><i class="fa fa-plus"></i> Add item</button> -->
+              <button style="margin-right: 5px;" type="button" id="companyCreateBtn" class="btn btn-default pull-left"><i class="fa fa-plus"></i> Add Company</button>
+              <button style="margin-right: 5px;" type="button" id="companyEditBtn" class="btn btn-default pull-left"><i class="fa fa-pencil"></i> Edit Company</button>
+              <button type="button" class="btn btn-default pull-left" id="companyDeleteBtn"><i class="fa  fa-trash"></i> Delete Company</button>
             </div>
             </div>
             <!-- /.box-header -->
@@ -477,7 +473,9 @@ desired effect
 
                 <thead>
                 <tr>
+                  <th>Company Id</th>
                   <th>Name</th>
+                  <th>Address</th>
                   <th>City</th>
                   <th>Creation Time</th>
                   <th>Last Updated Time</th>
@@ -498,7 +496,9 @@ desired effect
 
                 <tfoot>
                 <tr>
-                   <th>Name</th>
+                 <th>Company Id</th>
+                  <th>Name</th>
+                  <th>Address</th>
                   <th>City</th>
                   <th>Creation Time</th>
                   <th>Last Updated Time</th>

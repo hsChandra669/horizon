@@ -11,12 +11,15 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.horizon.dao.rowmapper.CompanyRowMapper;
 import com.horizon.model.Company;
+import com.horizon.resources.exception.HnException;
 
 @Repository("companyDAO")
 public class CompanyDAOImpl implements CompanyDAO{
@@ -36,12 +39,18 @@ public class CompanyDAOImpl implements CompanyDAO{
 	private static final String GET_ALL_QUERY = "SELECT COMPANY_ID, NAME, ADDRESS, CITY, ENABLED, CREATED_BY,"
 			+ " CREATED_ON, LAST_UPDATED_ON from company";
 
-	private static final String GET_BY_NAME_QUERY = "SELECT company_id, company_name, location, create_ts, last_update_ts from company"
-			+ "  where company_name = :companyName";
+	private static final String GET_BY_NAME_QUERY = "SELECT COMPANY_ID, NAME, ADDRESS, CITY, CREATED_ON,"
+			+ " LAST_UPDATED_ON, ENABLED, CREATED_BY from company"
+			+ "  where NAME = :companyName";
 
 	private static final String INSERT_QUERY = "INSERT INTO company "
 			+ " (ADDRESS, NAME, CITY, ENABLED, CREATED_BY, CREATED_ON, LAST_UPDATED_ON) "
 			+ "VALUES(:address, :name, :city, :enabled, :createdBy, :createTS, :lastUpdateTS)";
+
+	private static final String UPDATE_QUERY = "UPDATE company SET NAME = :name, ADDRESS = :address, CITY = :city, "
+			+ " LAST_UPDATED_ON = :lastUpdateTS where COMPANY_ID = :companyid";
+
+	private static final String DELETE_QUERY = "DELETE FROM  company  WHERE COMPANY_ID= :companyid";
 
 	@Override
 	public void create(Company company) {
@@ -63,14 +72,25 @@ public class CompanyDAOImpl implements CompanyDAO{
 
 	@Override
 	public void update(Company company) {
-		// TODO Auto-generated method stub
+		String methodName = "update ";
+		logger.info(methodName + company);
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("address", company.getAddress());
+		parameters.put("name", company.getCompanyName());
+		parameters.put("city", company.getCity());
+		long milisec = Calendar.getInstance().getTimeInMillis();
+		parameters.put("lastUpdateTS", new Timestamp(milisec));
+		parameters.put("companyid", company.getCompanyID());
+
+		namedParameterJdbcTemplate.update(UPDATE_QUERY, parameters);
 
 	}
 
 	@Override
 	public void delete(int companyID) {
-		// TODO Auto-generated method stub
-
+		String methodName = "delete(int)";
+		Map<String, Integer> namedParams = Collections.singletonMap("companyid", companyID);
+		this.namedParameterJdbcTemplate.update(DELETE_QUERY, namedParams);
 	}
 
 	@Override
@@ -95,11 +115,17 @@ public class CompanyDAOImpl implements CompanyDAO{
 		String methodName = "getByCompanyName(name) - ";
 		logger.entry(methodName + name);
 		Company company = null;
-		Map<String, String> namedParams = Collections.singletonMap("companyName", name);
-		CompanyRowMapper mapper = new CompanyRowMapper();
-		logger.debug(methodName, "mapper - ", namedParams);
-		company = this.namedParameterJdbcTemplate.queryForObject(GET_BY_NAME_QUERY, namedParams, mapper);
-		logger.debug(methodName, "QUERY: Executed ", company);
+		try {
+			Map<String, String> namedParams = Collections.singletonMap("companyName", name);
+			CompanyRowMapper mapper = new CompanyRowMapper();
+			logger.debug(methodName, "mapper - ", namedParams);
+			company = this.namedParameterJdbcTemplate.queryForObject(GET_BY_NAME_QUERY, namedParams, mapper);
+			logger.debug(methodName, "QUERY: Executed ", company);
+
+		} catch (IncorrectResultSizeDataAccessException e) {
+			company = null;
+			// TODO: handle exception
+		}
 		return company;
 	}
 }

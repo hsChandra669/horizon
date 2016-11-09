@@ -1,10 +1,18 @@
 package com.horizon.model;
 
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class Company {
 
 	private long companyID;
+	@NotEmpty
+	@Size(min = 2, max = 10)
 	private String companyName;
 	private String address;
+	@NotEmpty
 	private String city;
 	private int enabled;
 	private int userID;
