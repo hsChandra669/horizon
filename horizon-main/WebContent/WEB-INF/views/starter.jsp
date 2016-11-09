@@ -76,6 +76,9 @@ var contextPath='<%=request.getContextPath()%>';
 <spring:url value="/resources/zmycustomjs/mycompany.js" var="mycompanyjs" />
 <script src="${mycompanyjs}"></script>
 
+<spring:url value="/resources/zmycustomjs/myservice.js" var="myservicejs" />
+<script src="${myservicejs}"></script>
+
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
      user experience. Slimscroll is required when using the
@@ -312,8 +315,8 @@ desired effect
       <ul class="sidebar-menu">
         <li class="header">HEADER</li>
         <!-- Optionally, you can add icons to the links -->
-        <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
-        <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
+        <li id="slidebarMenuCompany" class="active menuclass"><a href="#"><i class="fa fa-link"></i> <span>Company</span></a></li>
+        <li id="slidebarMenuService" class="menuclass"><a href="#"><i class="fa fa-link"></i> <span>Service</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
             <span class="pull-right-container">
@@ -350,7 +353,7 @@ desired effect
 
 
     <!-- Main content -->
-    <section class="content">
+    <section class="content" id="content1">
 
       <div class="row">
         <div class="col-xs-12">
@@ -516,6 +519,21 @@ desired effect
       <!-- /.row -->
     </section>
     <!-- /.content -->
+
+
+    <section class="content" id="content2">
+
+    	<h3>YOUR content should go here</h3>
+
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+
+
+
+
+
+
   </div>
   <!-- /.content-wrapper -->
 

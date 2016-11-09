@@ -2,6 +2,17 @@ var companytable;
 var rowNode;
 $(function () {
 
+	$('#slidebarMenuCompany').on( 'click', function () {
+		$('#content2').hide();
+		$('#content1').show();
+
+
+	});
+
+	//hiding second content
+
+	$('#content2').hide();
+
 	loadCompanies();
 
 
