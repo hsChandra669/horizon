@@ -166,5 +166,4 @@ public class CompanyRestController {
 		}
 		return new ResponseEntity(jsonResponse, status);
 	}
-
 }
