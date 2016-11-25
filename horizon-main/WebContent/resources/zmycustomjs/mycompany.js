@@ -2,12 +2,12 @@ var companytable;
 var rowNode;
 $(function () {
 
-	$('#slidebarMenuCompany').on( 'click', function () {
+	/*$('#slidebarMenuCompany').on( 'click', function () {
 		$('#content2').hide();
 		$('#content1').show();
 
 
-	});
+	});*/
 
 	//hiding second content
 
@@ -27,14 +27,42 @@ $(function () {
 	});
 
 	// comapny edit form to show with pre populated row selected data
-	$('#companyEditBtn').on( 'click', function () {
+	/*$('#companyEditBtn').on( 'click', function () {
 		$('.inputForm').hide();
 		$('#formModal-title').html("Edit Company Details");
 		$('.FormvalidationError').empty();
 		// populating data in edit forms
 		var rowSelected = companytable.$('tr.active');
 		if (rowSelected.index() >= 0) {
+			alert("index - " + rowSelected.index());
 			var rowData = companytable.row(rowSelected.index()).data();
+			var companyName =  rowData[1];
+			var companyAddress =  rowData[2];
+			var companyCity =  rowData[3];
+
+			$('#editFormCompNameId').val(companyName);
+			$('#editFormCompAddressId').val(companyAddress);
+			$('#editFormCompCityId').val(companyCity);
+
+			$('#formeModal').modal('toggle');
+			$('#editCompanyForm').show();
+
+		} else {
+			alert("please select the row to update");
+		}
+
+	});*/
+
+
+	$('#companyEditBtn').on( 'click', function () {
+		$('.inputForm').hide();
+		$('#formModal-title').html("Edit Company Details");
+		$('.FormvalidationError').empty();
+		// populating data in edit forms
+		var rowSelected = companytable.$('tr.active');
+		var index = companytable.row(rowSelected).index();
+		if (index >= 0) {
+			var rowData = companytable.row(index).data();
 			var companyName =  rowData[1];
 			var companyAddress =  rowData[2];
 			var companyCity =  rowData[3];
@@ -64,10 +92,16 @@ $(function () {
     		$('#companyData tbody').on( 'click', 'tr', function () {
     	        if ( $(this).hasClass('active') ) {
     	            $(this).removeClass('active');
+    	            // hide product details
+    	            $('#boxCompanyProductData').hide();
     	        }
     	        else {
     	        	companytable.$('tr.active').removeClass('active');
     	            $(this).addClass('active');
+    	            //show product details
+    	            loadProductData();
+    	            $('#boxCompanyProductData').show();
+
     	        }
     	    } );
 
@@ -121,7 +155,7 @@ $(function () {
     			var companyLoc = $("#editFormCompCityId").val();
     			// get company id
     			var selected = companytable.$('tr.active');
-    			var rowIndex = selected.index();
+    			var rowIndex = companytable.row(selected).index();
     			var data = companytable.row(rowIndex).data();
     			var companyID = data[0];
 
@@ -158,7 +192,7 @@ $(function () {
 
     		$('#companyDeleteBtn').on( 'click', function () {
     			var selected = companytable.$('tr.active');
-    			var rowIndex = selected.index();
+    			var rowIndex = companytable.row(selected).index();
 
     			if (rowIndex >= 0) {
 
@@ -218,6 +252,7 @@ function loadCompanies(){
             				  )
     				});
             	  companytable = $("#companyData").DataTable( {
+            		  	autoWidth: false,
             	        "columnDefs": [
             	                       {
             	                           "targets": [ 0 ],
@@ -225,6 +260,7 @@ function loadCompanies(){
             	                           "searchable": false
             	                       }
             	                   ]
+
             	               } );
             }else{
             	alert("company retrieve failed");
@@ -263,6 +299,51 @@ function deleteCompanyData(index) {
 	var rowNode  = companytable.row(index).remove().draw(false);
 }
 
+function loadProductData(companyID) {
+	// get company id
+	var rowSelected = companytable.$('tr.active');
+	var index = companytable.row(rowSelected).index();
+	var data = companytable.row(index).data();
+	var companyID = data[0];
+
+	 var request = $.ajax({
+		 url: contextPath+"/products/list/"+companyID,
+		  method: "GET",
+		  dataType: 'json'
+
+		}).done(function(res) {
+            if(res.status==="SUCCESS"){
+            	addCompanyProducts(res.object);
+
+            }else{
+            	alert("product retrieve failed");
+            }
+        }).fail(function(data){
+        	alert("product retrieve failed");
+        });
+
+}
+
+
+
+function addCompanyProducts(products) {
+	var table = $('#companyProductData').DataTable();
+	table.clear().draw();
+	 $.each(products, function(idx, obj) {
+
+			var rowNode  = table.row.add( [
+			            obj.productName,
+			            obj.productType,
+			            obj.createTS,
+			            obj.lastUpdateTS
+			        ] ).draw( false );
+
+		});
+}
+
+$( window ).load(function() {
+	$('#slidebarMenuCompany').addClass("active");
+});
 
 
 

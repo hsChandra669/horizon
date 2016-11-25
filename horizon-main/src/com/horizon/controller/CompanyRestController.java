@@ -29,8 +29,8 @@ import com.horizon.validation.ValidationErrorBuilder;
 public class CompanyRestController {
 	Logger logger = LogManager.getLogger(CompanyRestController.class);
 
-	  @Autowired
-	    private MessageSource messageSource;
+	 @Autowired
+	 private MessageSource messageSource;
 
 	@Autowired
 	private CompanyService companyService;
@@ -146,8 +146,8 @@ public class CompanyRestController {
 	@DeleteMapping("/company/{id}")
 	public ResponseEntity deleteCustomer(@PathVariable int id) {
 		String methodName = "deleteCustomer - ";
-		logger.entry(methodName + id);
-		System.out.println(methodName + id);
+		logger.entry(methodName + "controller" + id);
+		System.out.println(methodName + "controller" + id);
 		HttpStatus status = HttpStatus.OK;
 		TransactionStatus txnStatus = null;
 		HnJsonResponse jsonResponse = new HnJsonResponse();

@@ -26,8 +26,6 @@ package com.horizon.dao.rowmapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-
 import org.springframework.jdbc.core.RowMapper;
 
 import com.horizon.model.Product;
@@ -38,9 +36,10 @@ public class ProductRowMapper implements RowMapper<Product> {
 	public Product mapRow(ResultSet rs, int rowNumb) throws SQLException {
 		Product product = new Product();
 
-		product.setproductID(rs.getInt("PRODUCT_ID"));
-		product.setname(rs.getString("PRODUCT_NAME"));
-		product.setproductType(rs.getString("PRODUCT_TYPE"));
+		product.setProductID(rs.getInt("PRODUCT_ID"));
+		product.setProductName(rs.getString("PRODUCT_NAME"));
+		product.setProductType(rs.getString("PRODUCT_TYPE"));
+		product.setCompanyID(rs.getInt("COMPANY_ID"));
 		product.setEnabled(rs.getInt("ENABLED"));
 		product.setUserID(rs.getInt("CREATED_BY"));
 		product.setCreateTS(String.valueOf(rs.getTimestamp("CREATED_ON")));

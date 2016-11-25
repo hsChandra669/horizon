@@ -2,9 +2,10 @@ package com.horizon.model;
 
 public class Product {
 
-	private long productID;
-	private String name;
+	private int productID;
+	private String productName;
 	private String productType;
+	private int companyID;
 	private int enabled;
 	private int userID;
 	private String createTS;
@@ -14,30 +15,47 @@ public class Product {
 
 	}
 
-	public Product(int productID, String name, String productType, int enabled, int userID, String createTS, String lastUpdateTS) {
+	public Product(int productID, String productName, String productType, int companyID, int enabled, int userID, String createTS, String lastUpdateTS) {
 		this.productID = productID;
-		this.name = name;
+		this.productName = productName;
 		this.productType = productType;
+		this.companyID = companyID;
 		this.enabled = enabled;
 		this.userID = userID;
 		this.createTS = createTS;
 		this.lastUpdateTS = lastUpdateTS;
 	}
 
-	public String getname() {
-		return name;
+	public int getProductID() {
+		return productID;
 	}
 
-	public void setname(String name) {
-		this.name = name;
+	public void setProductID(int productID) {
+		this.productID = productID;
 	}
 
-	public String getproductType() {
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getProductType() {
 		return productType;
 	}
 
-	public void setproductType(String productType) {
+	public void setProductType(String productType) {
 		this.productType = productType;
+	}
+
+	public int getCompanyID() {
+		return companyID;
+	}
+
+	public void setCompanyID(int companyID) {
+		this.companyID = companyID;
 	}
 
 	public int getEnabled() {
@@ -56,14 +74,6 @@ public class Product {
 		this.userID = userID;
 	}
 
-	public long getproductID() {
-		return productID;
-	}
-
-	public void setproductID(long productID) {
-		this.productID = productID;
-	}
-
 	public String getCreateTS() {
 		return createTS;
 	}
@@ -80,5 +90,11 @@ public class Product {
 		this.lastUpdateTS = lastUpdateTS;
 	}
 
+	@Override
+	public String toString() {
+		return "Product [productID=" + productID + ", productName=" + productName + ", productType=" + productType
+				+ ", companyID=" + companyID + ", enabled=" + enabled + ", userID=" + userID + ", createTS=" + createTS
+				+ ", lastUpdateTS=" + lastUpdateTS + "]";
+	}
 
 }

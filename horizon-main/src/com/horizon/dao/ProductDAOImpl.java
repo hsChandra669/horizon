@@ -11,11 +11,14 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.horizon.dao.rowmapper.CompanyRowMapper;
 import com.horizon.dao.rowmapper.ProductRowMapper;
+import com.horizon.model.Company;
 import com.horizon.model.Product;
 
 @Repository("productDAO")
@@ -33,23 +36,27 @@ public class ProductDAOImpl implements ProductDAO{
 	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
 		return namedParameterJdbcTemplate;
 	}
-	private static final String GET_ALL_QUERY = "SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_TYPE, ENABLED, CREATED_BY,"
-			+ " CREATED_ON, LAST_UPDATED_ON FROM PRODUCT";
+	private static final String GET_ALL_QUERY = "SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_TYPE, COMPANY_ID, ENABLED, "
+			+ " CREATED_BY, CREATED_ON,  LAST_UPDATED_ON FROM PRODUCT";
 
-	private static final String GET_BY_NAME_QUERY = "SELECT PRODUCT_ID, PRODUCT_TYPE,CREATED_BY, CREATED_ON,  LAST_UPDATED_ON FROM PRODUCT"
-			+ "  WHERE PRODUCT_NAME = :productName";
+	private static final String GET_BY_NAME_QUERY = "SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_TYPE, COMPANY_ID, ENABLED, "
+			+ " CREATED_BY, CREATED_ON,  LAST_UPDATED_ON FROM PRODUCT WHERE PRODUCT_NAME = :productName";
 
 	private static final String INSERT_QUERY = "INSERT INTO PRODUCT "
-			+ " (NAME, PRODUCT_TYPE, ENABLED, CREATED_BY, CREATED_ON, LAST_UPDATED_ON) "
-			+ "VALUES(:name, :productType, :enabled, :createdBy, :createTS, :lastUpdateTS)";
+			+ " (PRODUCT_NAME, PRODUCT_TYPE, COMPANY_ID, ENABLED, CREATED_BY, CREATED_ON, LAST_UPDATED_ON) "
+			+ "VALUES(:productName, :productType, :companyID, :enabled, :createdBy, :createTS, :lastUpdateTS)";
+
+	private static final String GET_BY_COMPANYID_QUERY = "SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_TYPE, COMPANY_ID, ENABLED, "
+			+ " CREATED_BY, CREATED_ON,  LAST_UPDATED_ON FROM PRODUCT WHERE COMPANY_ID = :companyID";
 
 	@Override
 	public void create(Product product) {
 		String methodName = "create ";
 		logger.info(methodName + product);
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		parameters.put("name", product.getname());
-		parameters.put("productType", product.getproductType());
+		parameters.put("productName", product.getProductName());
+		parameters.put("productType", product.getProductType());
+		parameters.put("companyID", product.getCompanyID());
 		parameters.put("enabled", product.getEnabled());
 		parameters.put("createdBy", product.getUserID());
 		long milisec = Calendar.getInstance().getTimeInMillis();
@@ -91,14 +98,37 @@ public class ProductDAOImpl implements ProductDAO{
 
 	@Override
 	public Product getByProductName(String name) {
+
 		String methodName = "getByProductName(name) - ";
 		logger.entry(methodName + name);
 		Product product = null;
-		Map<String, String> namedParams = Collections.singletonMap("productName", name);
-		ProductRowMapper mapper = new ProductRowMapper();
-		logger.debug(methodName, "mapper - ", namedParams);
-		product = this.namedParameterJdbcTemplate.queryForObject(GET_BY_NAME_QUERY, namedParams, mapper);
-		logger.debug(methodName, "QUERY: Executed ", product);
+		try {
+			Map<String, String> namedParams = Collections.singletonMap("productName", name);
+			ProductRowMapper mapper = new ProductRowMapper();
+			logger.debug(methodName, "mapper - ", namedParams);
+			product = this.namedParameterJdbcTemplate.queryForObject(GET_BY_NAME_QUERY, namedParams, mapper);
+			logger.debug(methodName, "QUERY: Executed ", product);
+
+		} catch (IncorrectResultSizeDataAccessException e) {
+			product = null;
+		}
 		return product;
+	}
+
+	@Override
+	public List<Product> getAllProductsByCompanyID(int companyID) {
+		String methodName = "getAllProductsByCompanyID(companyID) - ";
+		List<Product> productList = new ArrayList<Product>();
+		try {
+			logger.entry(methodName + "DAO" + companyID);
+			Map<String, Integer> namedParams = Collections.singletonMap("companyID", companyID);
+			ProductRowMapper mapper = new ProductRowMapper();
+			logger.debug(methodName, "mapper - ", namedParams);
+			productList = this.namedParameterJdbcTemplate.query(GET_BY_COMPANYID_QUERY, namedParams, mapper);
+			logger.debug(methodName, "QUERY: Executed ", productList);
+
+		} catch (IncorrectResultSizeDataAccessException e) {
+		}
+		return productList;
 	}
 }

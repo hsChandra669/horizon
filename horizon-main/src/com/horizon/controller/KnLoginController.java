@@ -12,16 +12,40 @@ import org.springframework.web.servlet.ModelAndView;
 public class KnLoginController {
 
 
-	@RequestMapping(value = { "/", "/welcome**" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/", "/dashboard**" }, method = RequestMethod.GET)
 	public ModelAndView welcomePage() {
+		System.out.println("inside dashboard");
 
 		ModelAndView model = new ModelAndView();
 		model.addObject("title", "Spring Security Custom Login Form");
 		model.addObject("message", "This is welcome page!");
-		model.setViewName("starter");
+		model.setViewName("dashboard");
 		return model;
 
 	}
+
+	@RequestMapping(value = {"/product" }, method = RequestMethod.GET)
+	public ModelAndView product() {
+		System.out.println("inside product");
+		ModelAndView model = new ModelAndView();
+		model.addObject("title", "Spring Security Custom Login Form");
+		model.addObject("message", "This is welcome page!");
+		model.setViewName("product");
+		return model;
+
+	}
+
+	@RequestMapping(value = {"/company" }, method = RequestMethod.GET)
+	public ModelAndView company() {
+		System.out.println("inside company");
+		ModelAndView model = new ModelAndView();
+		model.addObject("title", "Spring Security Custom Login Form");
+		model.addObject("message", "This is welcome page!");
+		model.setViewName("company");
+		return model;
+
+	}
+
 
 	@RequestMapping(value = "/admin**", method = RequestMethod.GET)
 	public ModelAndView adminPage() {
