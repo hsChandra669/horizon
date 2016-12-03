@@ -20,6 +20,13 @@ var contextPath='<%=request.getContextPath()%>';
   <!-- <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"> -->
   <spring:url value="/resources/bootstrap/css/bootstrap.min.css" var="bootstrapmincss" />
 		<link href="${bootstrapmincss}" rel="stylesheet" />
+
+				<!-- Select2 -->
+ <!-- <link rel="stylesheet" href="../../plugins/select2/select2.min.css">-->
+  <spring:url value="/resources/plugins/select2/select2.min.css" var="select2mincss" />
+		<link href="${select2mincss}" rel="stylesheet" />
+
+
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
   <!-- Ionicons -->
@@ -51,7 +58,6 @@ var contextPath='<%=request.getContextPath()%>';
 		<link href="${dataTablesbootstrapcss}" rel="stylesheet" />
 
 
-
 		<!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 2.2.3 -->
@@ -72,6 +78,9 @@ var contextPath='<%=request.getContextPath()%>';
 
 <spring:url value="/resources/plugins/datatables/dataTables.bootstrap.min.js" var="dataTablesbootstrapminjs" />
 <script src="${dataTablesbootstrapminjs}"></script>
+
+<spring:url value="/resources/plugins/select2/select2.full.min.js" var="select2fullminjs" />
+<script src="${select2fullminjs}"></script>
 
 <spring:url value="/resources/zmycustomjs/mycommon.js" var="mycommonjs" />
 <script src="${mycommonjs}"></script>
@@ -375,7 +384,7 @@ desired effect
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title" id="formModal-title"></h4>
+          <h4 class="modal-title" id="productFormModal-title"></h4>
         </div>
 
          <!--  <p>Some text in the modal.</p> -->
@@ -394,13 +403,28 @@ desired effect
               <div class="FormvalidationError">
               <!-- <span style="display:block;">one</span>-->
               </div>
+
+
+              <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label>Company Name</label>
+                <select class="form-control select2" id="createProductCompanyListID" style="width: 100%;">
+                 <!--  <option>Alabama</option>
+                  <option>Alaska</option> -->
+                </select>
+              </div>
+            </div>
+
+          </div>
+
                 <div class="form-group">
                   <label for="productName">Name</label>
-                  <input type="text" class="form-control" id="productName" placeholder="Enter Product name">
+                  <input type="text" class="form-control" id="createProductNameID" placeholder="Enter Product name">
                 </div>
                  <div class="form-group">
                   <label for="productType">Type</label>
-                  <input type="text" class="form-control" id="productType" placeholder="Enter Product type">
+                  <input type="text" class="form-control" id="createProductTypeID" placeholder="Enter Product type">
                 </div>
               </div>
 
@@ -413,20 +437,39 @@ desired effect
             </form>
              <!-- create Product form end  -->
 
-               <!-- edit product form start -->
+              <!-- Edit Product form start -->
             <form role="form" id="editProductForm" class="inputForm">
               <div class="box-body">
-               <div class="FormvalidationError">
+
+              <!-- holds validation error -->
+              <div class="FormvalidationError">
+              <!-- <span style="display:block;">one</span>-->
               </div>
+
+
+              <div class="row">
+            <div class="col-md-8">
+              <div class="form-group">
+                <label>Company Name</label>
+                <select class="form-control select2" id="editProductCompanyListID" disabled="disabled" style="width: 100%;">
+                 <!--  <option>Alabama</option>
+                  <option>Alaska</option> -->
+                </select>
+              </div>
+            </div>
+
+          </div>
+
                 <div class="form-group">
                   <label for="productName">Name</label>
-                  <input type="text" class="form-control" id="editFormProductNameId" placeholder="Enter Product Name" readonly>
+                  <input type="text" class="form-control" id="editProductNameID" placeholder="Enter Product name">
                 </div>
                  <div class="form-group">
                   <label for="productType">Type</label>
-                  <input type="text" class="form-control" id="editFormProductTypeId" placeholder="Enter Product type">
+                  <input type="text" class="form-control" id="editProductTypeID" placeholder="Enter Product type">
                 </div>
               </div>
+
               <!-- /.box-body -->
 
               <div class="box-footer">
@@ -434,6 +477,7 @@ desired effect
                <!--  <button type="button" class="btn btn-primary">Close</button> -->
               </div>
             </form>
+             <!-- create Product form end  -->
              <!-- edit product form end  -->
 
 
@@ -472,6 +516,7 @@ desired effect
                   <th>Product Id</th>
                   <th>Name</th>
                   <th>Type</th>
+                  <th>Company Name</th>
                   <th>Creation Time</th>
                   <th>Last Updated Time</th>
                 </tr>
@@ -494,6 +539,7 @@ desired effect
                   <th>Product Id</th>
                   <th>Name</th>
                   <th>Type</th>
+                   <th>Company Name</th>
                   <th>Creation Time</th>
                   <th>Last Updated Time</th>
                 </tr>

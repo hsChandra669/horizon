@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class Company {
 
-	private long companyID;
+	private int companyID;
 	@NotEmpty
 	@Size(min = 2, max = 10)
 	private String companyName;
@@ -74,11 +74,11 @@ public class Company {
 		this.userID = userID;
 	}
 
-	public long getCompanyID() {
+	public int getCompanyID() {
 		return companyID;
 	}
 
-	public void setCompanyID(long companyID) {
+	public void setCompanyID(int companyID) {
 		this.companyID = companyID;
 	}
 

@@ -43,6 +43,8 @@ public class CompanyDAOImpl implements CompanyDAO{
 			+ " LAST_UPDATED_ON, ENABLED, CREATED_BY from company"
 			+ "  where NAME = :companyName";
 
+	private static final String GET_COMPANY_NAME = "SELECT NAME FROM COMPANY";
+
 	private static final String INSERT_QUERY = "INSERT INTO company "
 			+ " (ADDRESS, NAME, CITY, ENABLED, CREATED_BY, CREATED_ON, LAST_UPDATED_ON) "
 			+ "VALUES(:address, :name, :city, :enabled, :createdBy, :createTS, :lastUpdateTS)";
@@ -127,5 +129,19 @@ public class CompanyDAOImpl implements CompanyDAO{
 			// TODO: handle exception
 		}
 		return company;
+	}
+
+	@Override
+	public List<String> getAllCompanyNames() {
+		String methodName = "getAllCompanyNames() - ";
+		logger.entry(methodName);
+		List<String> companyList = new ArrayList<>();
+		try {
+			companyList = this.jdbcTemplate.queryForList(GET_COMPANY_NAME, String.class);
+			logger.debug(methodName, "QUERY: Executed ", companyList);
+
+		} catch (IncorrectResultSizeDataAccessException e) {
+		}
+		return companyList;
 	}
 }

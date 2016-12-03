@@ -15,4 +15,6 @@ public interface CompanyService {
 
 	 public void deleteCompany(int companyID);
 
+	  public List<String> getAllCompanyNames();
+
 }

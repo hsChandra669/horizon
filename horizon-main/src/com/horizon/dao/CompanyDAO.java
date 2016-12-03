@@ -17,4 +17,8 @@ public interface CompanyDAO {
     public List<Company> getAllCompanies();
 
     public Company getByCompanyName(String name);
+
+    public List<String> getAllCompanyNames();
+
+
 }

@@ -17,6 +17,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.horizon.dao.rowmapper.CompanyRowMapper;
+import com.horizon.dao.rowmapper.GetProductRowMapper;
 import com.horizon.dao.rowmapper.ProductRowMapper;
 import com.horizon.model.Company;
 import com.horizon.model.Product;
@@ -36,8 +37,8 @@ public class ProductDAOImpl implements ProductDAO{
 	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
 		return namedParameterJdbcTemplate;
 	}
-	private static final String GET_ALL_QUERY = "SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_TYPE, COMPANY_ID, ENABLED, "
-			+ " CREATED_BY, CREATED_ON,  LAST_UPDATED_ON FROM PRODUCT";
+	private static final String GET_ALL_QUERY = "SELECT  C.NAME,  P.PRODUCT_ID, P.PRODUCT_NAME, P.PRODUCT_TYPE, P.COMPANY_ID, P.ENABLED, "
+			+ "P.CREATED_BY, P.CREATED_ON,  P.LAST_UPDATED_ON FROM PRODUCT P, COMPANY C WHERE P.COMPANY_ID=C.COMPANY_ID";
 
 	private static final String GET_BY_NAME_QUERY = "SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_TYPE, COMPANY_ID, ENABLED, "
 			+ " CREATED_BY, CREATED_ON,  LAST_UPDATED_ON FROM PRODUCT WHERE PRODUCT_NAME = :productName";
@@ -48,6 +49,14 @@ public class ProductDAOImpl implements ProductDAO{
 
 	private static final String GET_BY_COMPANYID_QUERY = "SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_TYPE, COMPANY_ID, ENABLED, "
 			+ " CREATED_BY, CREATED_ON,  LAST_UPDATED_ON FROM PRODUCT WHERE COMPANY_ID = :companyID";
+
+
+	private static final String UPDATE_QUERY = "UPDATE PRODUCT SET PRODUCT_NAME = :productName, PRODUCT_TYPE = :productType, "
+			+ " LAST_UPDATED_ON = :lastUpdateTS where PRODUCT_ID = :productId";
+
+	private static final String DELETE_QUERY = "DELETE FROM  PRODUCT  WHERE PRODUCT_ID= :productId";
+
+	private static final String DELETE_BY_COMANYID_QUERY = "DELETE FROM  PRODUCT  WHERE COMPANY_ID= :companyID";
 
 	@Override
 	public void create(Product product) {
@@ -69,14 +78,31 @@ public class ProductDAOImpl implements ProductDAO{
 
 	@Override
 	public void update(Product product) {
-		// TODO Auto-generated method stub
+		String methodName = "update ";
+		logger.info(methodName + product);
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("productName", product.getProductName());
+		parameters.put("productType", product.getProductType());
+		long milisec = Calendar.getInstance().getTimeInMillis();
+		parameters.put("lastUpdateTS", new Timestamp(milisec));
+		parameters.put("productId", product.getProductID());
+
+		namedParameterJdbcTemplate.update(UPDATE_QUERY, parameters);
 
 	}
 
 	@Override
 	public void delete(int productID) {
-		// TODO Auto-generated method stub
+		String methodName = "delete(int)";
+		Map<String, Integer> namedParams = Collections.singletonMap("productId", productID);
+		this.namedParameterJdbcTemplate.update(DELETE_QUERY, namedParams);
+	}
 
+	@Override
+	public void deleteProductsByCompanyID(int companyID) {
+		String methodName = "deleteProductsByCompanyID(int)";
+		Map<String, Integer> namedParams = Collections.singletonMap("companyID", companyID);
+		this.namedParameterJdbcTemplate.update(DELETE_BY_COMANYID_QUERY, namedParams);
 	}
 
 	@Override
@@ -89,7 +115,7 @@ public class ProductDAOImpl implements ProductDAO{
 	public List<Product> getAllProducts() {
 		String methodName = "getAllCompanies()";
 		logger.debug(methodName, "QUERY: Executing - " + GET_ALL_QUERY);
-		ProductRowMapper mapper = new ProductRowMapper();
+		GetProductRowMapper mapper = new GetProductRowMapper();
 		List<Product> productList = new ArrayList<Product>();
 		productList = this.jdbcTemplate.query(GET_ALL_QUERY, mapper);
 		logger.debug(methodName, "QUERY: Executed - " + productList);
@@ -131,4 +157,5 @@ public class ProductDAOImpl implements ProductDAO{
 		}
 		return productList;
 	}
+
 }

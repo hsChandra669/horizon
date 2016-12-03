@@ -5,3 +5,7 @@ $( window ).load(function() {
 });
 
 });
+
+$(function () {
+
+});

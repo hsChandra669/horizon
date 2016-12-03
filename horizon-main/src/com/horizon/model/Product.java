@@ -1,8 +1,11 @@
 package com.horizon.model;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class Product {
 
 	private int productID;
+	@NotEmpty
 	private String productName;
 	private String productType;
 	private int companyID;
@@ -10,12 +13,14 @@ public class Product {
 	private int userID;
 	private String createTS;
 	private String lastUpdateTS;
+	private String companyName;
 
 	public Product () {
 
 	}
 
-	public Product(int productID, String productName, String productType, int companyID, int enabled, int userID, String createTS, String lastUpdateTS) {
+	public Product(int productID, String productName, String productType, int companyID, int enabled, int userID, String createTS,
+			String lastUpdateTS, String companyName) {
 		this.productID = productID;
 		this.productName = productName;
 		this.productType = productType;
@@ -24,6 +29,15 @@ public class Product {
 		this.userID = userID;
 		this.createTS = createTS;
 		this.lastUpdateTS = lastUpdateTS;
+		this.companyName = companyName;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 
 	public int getProductID() {
@@ -94,7 +108,9 @@ public class Product {
 	public String toString() {
 		return "Product [productID=" + productID + ", productName=" + productName + ", productType=" + productType
 				+ ", companyID=" + companyID + ", enabled=" + enabled + ", userID=" + userID + ", createTS=" + createTS
-				+ ", lastUpdateTS=" + lastUpdateTS + "]";
+				+ ", lastUpdateTS=" + lastUpdateTS + ", companyName=" + companyName + "]";
 	}
+
+
 
 }

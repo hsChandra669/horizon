@@ -23,6 +23,7 @@ import com.horizon.model.Company;
 import com.horizon.model.HnJsonResponse;
 import com.horizon.resources.exception.HnException;
 import com.horizon.service.CompanyService;
+import com.horizon.service.ProductService;
 import com.horizon.validation.ValidationErrorBuilder;
 
 @RestController
@@ -34,6 +35,9 @@ public class CompanyRestController {
 
 	@Autowired
 	private CompanyService companyService;
+
+	@Autowired
+	private ProductService productService;
 
 	@Autowired
 	HnTransactionManagerHelper transactionManager;
@@ -154,6 +158,7 @@ public class CompanyRestController {
 
 		try {
 			 txnStatus = transactionManager.getTrasaction();
+			 productService.deleteProductsByCompanyID(id);
 			 companyService.deleteCompany(id);
 			 transactionManager.commit(txnStatus);
 
@@ -165,5 +170,29 @@ public class CompanyRestController {
 			 e.printStackTrace();
 		}
 		return new ResponseEntity(jsonResponse, status);
+	}
+
+	@GetMapping("/company/name/list")
+	public ResponseEntity  getAllCompanyNames() {
+		HnJsonResponse jsonResponse = new HnJsonResponse();
+		HttpStatus status = HttpStatus.OK;
+		 List<String> list = null;
+		  try{
+			  String methodName = "getAllCompanyNames - ";
+			  logger.entry(methodName);
+			  System.out.println(methodName);
+			 list =  companyService.getAllCompanyNames();
+			 System.out.println(methodName + list.size());
+
+			 jsonResponse.setStatus("SUCCESS");
+			 jsonResponse.setObject(list);
+			 logger.exit(methodName + list.size());
+
+		  }catch( Exception e){
+			  jsonResponse.setStatus("ERROR");
+			  status = HttpStatus.INTERNAL_SERVER_ERROR;
+			  e.printStackTrace();
+          }
+		  return new ResponseEntity(jsonResponse, status);
 	}
 }

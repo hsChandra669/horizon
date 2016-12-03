@@ -12,6 +12,8 @@ public interface ProductDAO {
 
     public void delete(int ProductID);
 
+    public void deleteProductsByCompanyID(int companyID);
+
     public Product get(int ProductID);
 
     public List<Product> getAllProducts();

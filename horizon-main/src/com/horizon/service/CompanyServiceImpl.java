@@ -49,4 +49,9 @@ public class CompanyServiceImpl implements CompanyService{
 
 	}
 
+	@Override
+	public List<String> getAllCompanyNames() {
+		return companyDao.getAllCompanyNames();
+	}
+
 }

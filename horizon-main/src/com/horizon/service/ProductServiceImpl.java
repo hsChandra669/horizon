@@ -17,6 +17,9 @@ public class ProductServiceImpl implements ProductService{
 	@Autowired
 	ProductDAO productDao;
 
+	@Autowired
+	CompanyDAO companyDao;
+
 
 	@Override
 	public Product createProduct(Product product) throws HnException{
@@ -26,18 +29,37 @@ public class ProductServiceImpl implements ProductService{
 			throw new HnException("product.already.exist");
 		}
 
+		Company company = companyDao.getByCompanyName(product.getCompanyName());
+
+		product.setCompanyID(company.getCompanyID());
 		product.setEnabled(1);
 		product.setUserID(1);
 		productDao.create(product);
+
 		dbProduct = productDao.getByProductName(product.getProductName());
+		dbProduct.setCompanyName(company.getCompanyName());
 		return dbProduct;
+
+	}
+
+	@Override
+	public Product updateProduct(Product product) {
+		Product dbProduct;
+		productDao.update(product);
+		dbProduct = productDao.getByProductName(product.getProductName());
+		dbProduct.setCompanyName(product.getCompanyName());
+		return dbProduct;
+	}
+
+	@Override
+	public void deleteProduct(int productID) {
+		productDao.delete(productID);
 
 	}
 
 
 	@Override
 	public List<Product> getAllProducts() {
-		// TODO Auto-generated method stub
 		return productDao.getAllProducts();
 	}
 
@@ -45,6 +67,12 @@ public class ProductServiceImpl implements ProductService{
 	@Override
 	public List<Product> getAllProductsByCompanyID(int comapnyID) {
 		return productDao.getAllProductsByCompanyID(comapnyID);
+	}
+
+	@Override
+	public void deleteProductsByCompanyID(int companyID) {
+		productDao.deleteProductsByCompanyID(companyID);
+
 	}
 
 }

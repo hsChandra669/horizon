@@ -210,6 +210,7 @@ $(function () {
 
                            if(res.status==="SUCCESS"){
                            	deleteCompanyData(rowIndex);
+                            $('#boxCompanyProductData').hide();
 
                            }else{
                         	   alert("failed");
