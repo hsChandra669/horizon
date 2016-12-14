@@ -81,6 +81,14 @@
 		</bean>
 	</mvc:interceptors>
 
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+
+		 <!-- setting maximum upload size -->
+		<property name="maxUploadSize" value="6164480" />
+
+	</bean>
+
+
 <bean id="hnContextLoadedListener" class="com.horizon.spring.context.HnContextLoadedListener" />
 <bean id="hnContextClosedListener" class="com.horizon.spring.context.HnContextClosedListener" />
 

@@ -26,34 +26,6 @@ $(function () {
 
 	});
 
-	// comapny edit form to show with pre populated row selected data
-	/*$('#companyEditBtn').on( 'click', function () {
-		$('.inputForm').hide();
-		$('#formModal-title').html("Edit Company Details");
-		$('.FormvalidationError').empty();
-		// populating data in edit forms
-		var rowSelected = companytable.$('tr.active');
-		if (rowSelected.index() >= 0) {
-			alert("index - " + rowSelected.index());
-			var rowData = companytable.row(rowSelected.index()).data();
-			var companyName =  rowData[1];
-			var companyAddress =  rowData[2];
-			var companyCity =  rowData[3];
-
-			$('#editFormCompNameId').val(companyName);
-			$('#editFormCompAddressId').val(companyAddress);
-			$('#editFormCompCityId').val(companyCity);
-
-			$('#formeModal').modal('toggle');
-			$('#editCompanyForm').show();
-
-		} else {
-			alert("please select the row to update");
-		}
-
-	});*/
-
-
 	$('#companyEditBtn').on( 'click', function () {
 		$('.inputForm').hide();
 		$('#formModal-title').html("Edit Company Details");
@@ -63,9 +35,9 @@ $(function () {
 		var index = companytable.row(rowSelected).index();
 		if (index >= 0) {
 			var rowData = companytable.row(index).data();
-			var companyName =  rowData[1];
-			var companyAddress =  rowData[2];
-			var companyCity =  rowData[3];
+			var companyName =  rowData[2];
+			var companyAddress =  rowData[3];
+			var companyCity =  rowData[4];
 
 			$('#editFormCompNameId').val(companyName);
 			$('#editFormCompAddressId').val(companyAddress);
@@ -80,6 +52,29 @@ $(function () {
 
 	});
 
+	$('#companyUploadFileBtn').on( 'click', function () {
+		$('.inputForm').hide();
+		$('#formModal-title').html("Uplaod Company Releated Files");
+		$('.FormvalidationError').empty();
+		var rowSelected = companytable.$('tr.active');
+		var index = companytable.row(rowSelected).index();
+		if (index >= 0) {
+		//	var rowData = companytable.row(index).data();
+			//var companyName =  rowData[1];
+			//var companyAddress =  rowData[2];
+			//var companyCity =  rowData[3];
+
+			//$('#editFormCompNameId').val(companyName);
+			//$('#editFormCompAddressId').val(companyAddress);
+			//$('#editFormCompCityId').val(companyCity);
+
+			$('#formeModal').modal('toggle');
+			$('#uploadFileCompanyForm').show();
+		}
+
+	});
+
+
 
 	/*$('#companyData tbody').on( 'click', 'td', function () {
 	    var columnData = companytable.column( $(this).index()+':visIdx' ).data();
@@ -89,20 +84,39 @@ $(function () {
 
 
 			// company datatable row select and de-select
-    		$('#companyData tbody').on( 'click', 'tr', function () {
-    	        if ( $(this).hasClass('active') ) {
-    	            $(this).removeClass('active');
-    	            // hide product details
-    	            $('#boxCompanyProductData').hide();
-    	        }
-    	        else {
-    	        	companytable.$('tr.active').removeClass('active');
-    	            $(this).addClass('active');
-    	            //show product details
-    	            loadProductData();
-    	            $('#boxCompanyProductData').show();
+    		$('#companyData tbody').on( 'click', 'tr', function (e) {
+    			var tdClass = $(e.target).attr("class");
+    			if ($.trim(tdClass) != "details-control") {
+    				alert(tdClass);
 
-    	        }
+    				if ( $(this).hasClass('active') ) {
+    					$(this).removeClass('active');
+    					// show create button and hide edit and delete button button
+    					$('.myCustomButton').hide();
+    					$('#companyCreateBtn').show();
+    					// hide product details
+    					$('#boxCompanyProductData').hide();
+    				}
+    				else {
+    					companytable.$('tr.active').removeClass('active');
+    					var selectedClass = $(this).find("td").attr("class");
+    					if (selectedClass != "dataTables_empty") {
+    						$(this).addClass('active');
+    						// show edit and delete buttonds and hide create button
+    						$('.myCustomButton').hide();
+    						$('#companyEditBtn').show();
+    						$('#companyDeleteBtn').show();
+    						$('#companyUploadFileBtn').show();
+
+
+    						//show product details
+    						loadProductData();
+    						$('#boxCompanyProductData').show();
+    					}
+
+    				}
+    			}
+
     	    } );
 
 
@@ -228,6 +242,54 @@ $(function () {
 
     		});
 
+
+    		$('#uploadFileCompanyForm').fileupload({
+    	       // dataType: 'json',
+    			 replaceFileInput:false,
+    			 autoUpload:false,
+    			 url:contextPath+"/file/upload",
+    			 type:'POST',
+
+    	        add: function (e, data) {
+    	        	//data.files = [];
+    	        	 $.each(data.files, function (index, file) {
+ 	        	        console.log('sending file: ' + file.name + '   ' + jQuery.now());
+ 	        	    });
+
+    	        	 $('#compProgBar').hide();
+    	        	 $('#compProgBar').css('width', '0%' );
+    	        	 $('#compProgBar').show();
+    	        	 $('#compProgBarPercentage').text('0%');
+
+    	        	// alert(data.files.length);
+    	               	$('#companyFileUploadSubmitBtn').on( 'click', function (){
+    	               		//alert("submit length - " + data.files.length);
+    	                    data.submit();
+    	                });
+    	        },
+    	        progress: function (e, data) {
+    	            var progress = parseInt(data.loaded / data.total * 100, 10);
+    	            $('#compProgBar').css('width',  progress + '%' );
+    	            $('#compProgBarPercentage').text(progress + '%');
+    	        },
+    	        change: function (e, data) {
+    	        	 $.each(data.files, function (index, file) {
+    	        	   //     console.log('Selected file: ' + file.name);
+    	        	    });
+    	        },
+    	        done: function (e, data) {
+    	           //data.context.text('Upload finished.');
+    	        	//resetting form;
+    	        	//jQuery.removeData(data.files);
+    	        	$( "#companyFileUploadSubmitBtn").unbind( "click" );
+    	        	$('#uploadFileCompanyForm')[0].reset();
+    	        	$('#companyInputFile1').val('');
+
+    	        }
+
+    	    });
+
+
   });
 
 //Loading companies to datatable on page load
@@ -244,6 +306,7 @@ function loadCompanies(){
             		  $('#companyData tbody').append(
             				  "<tr>" +
             				  "<td>" +obj.companyID+ "</td>" +
+            				  "<td>" +null+ "</td>" +
             				  "<td>" +obj.companyName+ "</td>" +
             				  "<td>" +obj.address+ "</td>" +
             				  "<td>" +obj.city+ "</td>" +
@@ -259,6 +322,14 @@ function loadCompanies(){
             	                           "targets": [ 0 ],
             	                           "visible": false,
             	                           "searchable": false
+            	                       },
+
+            	                       {
+            	                    	   "targets": [ 1 ],
+            	                    	   "className":      'details-control',
+            	                           "orderable":      false,
+            	                           "data":           null,
+            	                           "defaultContent": ''
             	                       }
             	                   ]
 
@@ -269,12 +340,32 @@ function loadCompanies(){
         }).fail(function(data){
         	alert("company retrieve failed");
         });
+
+
+	// Add event listener for opening and closing details
+	    $('#companyData tbody').on('click', 'td.details-control', function () {
+	        var tr = $(this).closest('tr');
+	        var row = companytable.row( tr );
+
+	        if ( row.child.isShown() ) {
+	            // This row is already open - close it
+	            row.child.hide();
+	            tr.removeClass('shown');
+	        }
+	        else {
+	            // Open this row
+	            row.child( format("test") ).show();
+	            tr.addClass('shown');
+	        }
+	    } );
+
 }
 
 //add single company row  to datatable
 function addCompanyData(company) {
 	var rowNode  = companytable.row.add( [
 	            company.companyID,
+	            null,
 	            company.companyName,
 	            company.address,
 	            company.city,
@@ -287,6 +378,7 @@ function addCompanyData(company) {
 function updateCompanyData(company , index) {
 	var rowNode  = companytable.row(index).data( [
 	            company.companyID,
+	            null,
 	            company.companyName,
 	            company.address,
 	            company.city,
@@ -298,6 +390,11 @@ function updateCompanyData(company , index) {
 //delete single company row  in datatable
 function deleteCompanyData(index) {
 	var rowNode  = companytable.row(index).remove().draw(false);
+	var selectedClass = $("#companyData > tbody > tr").find("td").attr("class");
+	if (selectedClass == "dataTables_empty") {
+		$('.myCustomButton').hide();
+        $('#companyCreateBtn').show();
+	}
 }
 
 function loadProductData(companyID) {
@@ -340,6 +437,25 @@ function addCompanyProducts(products) {
 			        ] ).draw( false );
 
 		});
+}
+
+/* Formatting function for row details - modify as you need */
+function format ( d ) {
+    // `d` is the original data object for the row
+    return '<table class="table table-bordered display" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr>'+
+            '<td>Full name:</td>'+
+            '<td>sanjeev</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Extension number:</td>'+
+            '<td>1234</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Extra info:</td>'+
+            '<td>And any further details here (images etc)...</td>'+
+        '</tr>'+
+    '</table>';
 }
 
 $( window ).load(function() {

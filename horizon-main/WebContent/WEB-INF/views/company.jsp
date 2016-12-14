@@ -16,22 +16,31 @@ var contextPath='<%=request.getContextPath()%>';
   <title>AdminLTE 2 | Starter</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
   <!-- Bootstrap 3.3.6 -->
   <!-- <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"> -->
   <spring:url value="/resources/bootstrap/css/bootstrap.min.css" var="bootstrapmincss" />
 		<link href="${bootstrapmincss}" rel="stylesheet" />
+
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+ <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"> -->
+   <spring:url value="/resources/font-awesome/css/font-awesome.min.css" var="fontawesomemincss" />
+		<link href="${fontawesomemincss}" rel="stylesheet" />
+
+
   <!-- Ionicons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"> -->
+
   <!-- Theme style -->
   <!-- <link rel="stylesheet" href="dist/css/AdminLTE.min.css"> -->
   <spring:url value="/resources/dist/css/AdminLTE.min.css" var="AdminLTEmincss" />
 		<link href="${AdminLTEmincss}" rel="stylesheet" />
+
   <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
         page. However, you can choose any other skin. Make sure you
         apply the skin class to the body tag so the changes take effect.
   -->
+
 <!--   <link rel="stylesheet" href="dist/css/skins/skin-blue.min.css"> -->
    <spring:url value="/resources/dist/css/skins/skin-blue.min.css" var="skinbluemincss" />
 		<link href="${skinbluemincss}" rel="stylesheet" />
@@ -43,47 +52,12 @@ var contextPath='<%=request.getContextPath()%>';
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 
-<!--   <script src="../../plugins/datatables/jquery.dataTables.min.js"></script>
-  <script src="../../plugins/datatables/dataTables.bootstrap.min.js"></script> -->
     <!-- <link rel="stylesheet" href="../../plugins/datatables/dataTables.bootstrap.css"> -->
-
     <spring:url value="/resources/plugins/datatables/dataTables.bootstrap.css" var="dataTablesbootstrapcss" />
 		<link href="${dataTablesbootstrapcss}" rel="stylesheet" />
 
-
-
-		<!-- REQUIRED JS SCRIPTS -->
-
-<!-- jQuery 2.2.3 -->
-<!-- <script src="plugins/jQuery/jquery-2.2.3.min.js"></script> -->
-<spring:url value="/resources/plugins/jQuery/jquery-2.2.3.min.js" var="jquery223minjs" />
-<script src="${jquery223minjs}"></script>
-<!-- Bootstrap 3.3.6 -->
-<!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
-<spring:url value="/resources/bootstrap/js/bootstrap.min.js" var="bootstrapminjs" />
-<script src="${bootstrapminjs}"></script>
-<!-- AdminLTE App -->
-<!-- <script src="dist/js/app.min.js"></script> -->
-<spring:url value="/resources/dist/js/app.min.js" var="appminjs" />
-<script src="${appminjs}"></script>
-
-<spring:url value="/resources/plugins/datatables/jquery.dataTables.min.js" var="jquerydataTablesminjs" />
-<script src="${jquerydataTablesminjs}"></script>
-
-<spring:url value="/resources/plugins/datatables/dataTables.bootstrap.min.js" var="dataTablesbootstrapminjs" />
-<script src="${dataTablesbootstrapminjs}"></script>
-
-<spring:url value="/resources/zmycustomjs/mycompany.js" var="mycompanyjs" />
-<script src="${mycompanyjs}"></script>
-
-<spring:url value="/resources/zmycustomjs/mycommon.js" var="mycommonjs" />
-<script src="${mycommonjs}"></script>
-
-<!-- Optionally, you can add Slimscroll and FastClick plugins.
-     Both of these plugins are recommended to enhance the
-     user experience. Slimscroll is required when using the
-     fixed layout. -->
-
+ <spring:url value="/resources/zmycustomcss/mycustom.css" var="mycustomcss" />
+		<link href="${mycustomcss}" rel="stylesheet" />
 
 </head>
 <!--
@@ -444,6 +418,44 @@ desired effect
             </form>
              <!-- edit company form end  -->
 
+                <!-- upload company file form start -->
+           <%--  <form role="form" id="uploadFileCompanyForm" class="inputForm" action="file/upload" method="post" enctype="multipart/form-data"> --%>
+            <form role="form" id="uploadFileCompanyForm" class="inputForm">
+              <div class="box-body">
+               <div class="FormvalidationError"> </div>
+
+				 <div class="form-group">
+                  <label for="companyInputFile1">File input</label>
+                  <input type="file" id="companyInputFile1" name="file"/>
+                <!--   <p class="help-block">Example block-level help text here.</p> -->
+                </div>
+
+
+                 <div class="box-body">
+             <!--  <p><code>.progress</code></p> -->
+              <!-- <p>Class: <code>.sm</code></p> -->
+                <span id="compProgBarPercentage">0%</span><span> Completed</span>
+              <div class="progress progress-sm active">
+                <div id="compProgBar" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                  <span class="sr-only">20% Complete</span>
+                </div>
+              </div>
+
+            </div>
+
+
+
+
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="button" id="companyFileUploadSubmitBtn" class="btn btn-primary">Upload</button>
+               <!--  <button type="button" class="btn btn-primary">Close</button> -->
+              </div>
+            </form>
+             <!-- upload company file form end  -->
+
 
           </div>
 
@@ -466,9 +478,10 @@ desired effect
               <h3 class="box-title">Company Details</h3>
               <div class="box-footer clearfix no-border">
              <!--  <button style="margin-right: 5px;" type="button" class="btn btn-default pull-left" data-toggle="modal" data-target="#companyCreateModal"><i class="fa fa-plus"></i> Add item</button> -->
-              <button style="margin-right: 5px;" type="button" id="companyCreateBtn" class="btn btn-default pull-left"><i class="fa fa-plus"></i> Add Company</button>
-              <button style="margin-right: 5px;" type="button" id="companyEditBtn" class="btn btn-default pull-left"><i class="fa fa-pencil"></i> Edit Company</button>
-              <button type="button" class="btn btn-default pull-left" id="companyDeleteBtn"><i class="fa  fa-trash"></i> Delete Company</button>
+              <button style="margin-right: 5px;" type="button" id="companyCreateBtn" class="btn btn-default pull-left, myCustomButton"><i class="fa fa-plus"></i> Add Company</button>
+              <button style="margin-right: 5px; display: none" type="button" id="companyEditBtn" class="btn btn-default pull-left, myCustomButton" ><i class="fa fa-pencil"></i> Edit Company</button>
+              <button style="display: none" type="button" class="btn btn-default pull-left, myCustomButton" id="companyDeleteBtn"><i class="fa  fa-trash"></i> Delete Company</button>
+              <button style="display: none" type="button" class="btn btn-default pull-left, myCustomButton" id="companyUploadFileBtn"><i class="fa  fa-upload"></i> Upload Files</button>
             </div>
             </div>
             <!-- /.box-header -->
@@ -478,6 +491,7 @@ desired effect
                 <thead>
                 <tr>
                   <th>Company Id</th>
+                  <th></th>
                   <th>Name</th>
                   <th>Address</th>
                   <th>City</th>
@@ -501,6 +515,7 @@ desired effect
                 <tfoot>
                 <tr>
                  <th>Company Id</th>
+                 <th></th>
                   <th>Name</th>
                   <th>Address</th>
                   <th>City</th>
@@ -689,6 +704,48 @@ desired effect
   <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
+
+
+
+		<!-- REQUIRED JS SCRIPTS -->
+
+<!-- jQuery 2.2.3 -->
+<spring:url value="/resources/plugins/jQuery/jquery-2.2.3.min.js" var="jquery223minjs" />
+<script src="${jquery223minjs}"></script>
+<!-- Bootstrap 3.3.6 -->
+<spring:url value="/resources/bootstrap/js/bootstrap.min.js" var="bootstrapminjs" />
+<script src="${bootstrapminjs}"></script>
+<!-- AdminLTE App -->
+<spring:url value="/resources/dist/js/app.min.js" var="appminjs" />
+<script src="${appminjs}"></script>
+
+<spring:url value="/resources/plugins/datatables/jquery.dataTables.min.js" var="jquerydataTablesminjs" />
+<script src="${jquerydataTablesminjs}"></script>
+
+<spring:url value="/resources/plugins/datatables/dataTables.bootstrap.min.js" var="dataTablesbootstrapminjs" />
+<script src="${dataTablesbootstrapminjs}"></script>
+z
+<spring:url value="/resources/tp/fileupload/jquery.ui.widget.js" var="jqueryuiwidgetjs" />
+<script src="${jqueryuiwidgetjs}"></script>
+
+<%-- <spring:url value="/resources/tp/fileupload/jquery.iframe-transport.js" var="jqueryiframetransportjs" />
+<script src="${jqueryiframetransportjs}"></script> --%>
+
+<spring:url value="/resources/tp/fileupload/jquery.fileupload.js" var="jqueryfileuploadjs" />
+<script src="${jqueryfileuploadjs}"></script>
+
+<spring:url value="/resources/zmycustomjs/mycompany.js" var="mycompanyjs" />
+<script src="${mycompanyjs}"></script>
+
+<spring:url value="/resources/zmycustomjs/mycommon.js" var="mycommonjs" />
+<script src="${mycommonjs}"></script>
+
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. Slimscroll is required when using the
+     fixed layout. -->
 
 
 </body>

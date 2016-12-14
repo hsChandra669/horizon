@@ -16,6 +16,7 @@ var contextPath='<%=request.getContextPath()%>';
   <title>AdminLTE 2 | Starter</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
   <!-- Bootstrap 3.3.6 -->
   <!-- <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"> -->
   <spring:url value="/resources/bootstrap/css/bootstrap.min.css" var="bootstrapmincss" />
@@ -26,15 +27,19 @@ var contextPath='<%=request.getContextPath()%>';
   <spring:url value="/resources/plugins/select2/select2.min.css" var="select2mincss" />
 		<link href="${select2mincss}" rel="stylesheet" />
 
-
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"> -->
+   <spring:url value="/resources/font-awesome/css/font-awesome.min.css" var="fontawesomemincss" />
+		<link href="${fontawesomemincss}" rel="stylesheet" />
+
   <!-- Ionicons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+ <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"> -->
+
   <!-- Theme style -->
   <!-- <link rel="stylesheet" href="dist/css/AdminLTE.min.css"> -->
   <spring:url value="/resources/dist/css/AdminLTE.min.css" var="AdminLTEmincss" />
 		<link href="${AdminLTEmincss}" rel="stylesheet" />
+
   <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
         page. However, you can choose any other skin. Make sure you
         apply the skin class to the body tag so the changes take effect.
@@ -56,44 +61,6 @@ var contextPath='<%=request.getContextPath()%>';
 
     <spring:url value="/resources/plugins/datatables/dataTables.bootstrap.css" var="dataTablesbootstrapcss" />
 		<link href="${dataTablesbootstrapcss}" rel="stylesheet" />
-
-
-		<!-- REQUIRED JS SCRIPTS -->
-
-<!-- jQuery 2.2.3 -->
-<!-- <script src="plugins/jQuery/jquery-2.2.3.min.js"></script> -->
-<spring:url value="/resources/plugins/jQuery/jquery-2.2.3.min.js" var="jquery223minjs" />
-<script src="${jquery223minjs}"></script>
-<!-- Bootstrap 3.3.6 -->
-<!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
-<spring:url value="/resources/bootstrap/js/bootstrap.min.js" var="bootstrapminjs" />
-<script src="${bootstrapminjs}"></script>
-<!-- AdminLTE App -->
-<!-- <script src="dist/js/app.min.js"></script> -->
-<spring:url value="/resources/dist/js/app.min.js" var="appminjs" />
-<script src="${appminjs}"></script>
-
-<spring:url value="/resources/plugins/datatables/jquery.dataTables.min.js" var="jquerydataTablesminjs" />
-<script src="${jquerydataTablesminjs}"></script>
-
-<spring:url value="/resources/plugins/datatables/dataTables.bootstrap.min.js" var="dataTablesbootstrapminjs" />
-<script src="${dataTablesbootstrapminjs}"></script>
-
-<spring:url value="/resources/plugins/select2/select2.full.min.js" var="select2fullminjs" />
-<script src="${select2fullminjs}"></script>
-
-<spring:url value="/resources/zmycustomjs/mycommon.js" var="mycommonjs" />
-<script src="${mycommonjs}"></script>
-
-<spring:url value="/resources/zmycustomjs/myproduct.js" var="myproductjs" />
-<script src="${myproductjs}"></script>
-
-
-
-<!-- Optionally, you can add Slimscroll and FastClick plugins.
-     Both of these plugins are recommended to enhance the
-     user experience. Slimscroll is required when using the
-     fixed layout. -->
 
 
 </head>
@@ -654,6 +621,41 @@ desired effect
   <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
+
+
+		<!-- REQUIRED JS SCRIPTS -->
+
+<!-- jQuery 2.2.3 -->
+<spring:url value="/resources/plugins/jQuery/jquery-2.2.3.min.js" var="jquery223minjs" />
+<script src="${jquery223minjs}"></script>
+<!-- Bootstrap 3.3.6 -->
+<spring:url value="/resources/bootstrap/js/bootstrap.min.js" var="bootstrapminjs" />
+<script src="${bootstrapminjs}"></script>
+<!-- AdminLTE App -->
+<spring:url value="/resources/dist/js/app.min.js" var="appminjs" />
+<script src="${appminjs}"></script>
+
+<spring:url value="/resources/plugins/datatables/jquery.dataTables.min.js" var="jquerydataTablesminjs" />
+<script src="${jquerydataTablesminjs}"></script>
+
+<spring:url value="/resources/plugins/datatables/dataTables.bootstrap.min.js" var="dataTablesbootstrapminjs" />
+<script src="${dataTablesbootstrapminjs}"></script>
+
+<spring:url value="/resources/plugins/select2/select2.full.min.js" var="select2fullminjs" />
+<script src="${select2fullminjs}"></script>
+
+<spring:url value="/resources/zmycustomjs/mycommon.js" var="mycommonjs" />
+<script src="${mycommonjs}"></script>
+
+<spring:url value="/resources/zmycustomjs/myproduct.js" var="myproductjs" />
+<script src="${myproductjs}"></script>
+
+
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. Slimscroll is required when using the
+     fixed layout. -->
 
 
 </body>
