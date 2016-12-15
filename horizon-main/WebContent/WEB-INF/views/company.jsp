@@ -724,7 +724,7 @@ desired effect
 
 <spring:url value="/resources/plugins/datatables/dataTables.bootstrap.min.js" var="dataTablesbootstrapminjs" />
 <script src="${dataTablesbootstrapminjs}"></script>
-z
+
 <spring:url value="/resources/tp/fileupload/jquery.ui.widget.js" var="jqueryuiwidgetjs" />
 <script src="${jqueryuiwidgetjs}"></script>
 

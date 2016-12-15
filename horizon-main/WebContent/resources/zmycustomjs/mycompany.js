@@ -87,7 +87,6 @@ $(function () {
     		$('#companyData tbody').on( 'click', 'tr', function (e) {
     			var tdClass = $(e.target).attr("class");
     			if ($.trim(tdClass) != "details-control") {
-    				alert(tdClass);
 
     				if ( $(this).hasClass('active') ) {
     					$(this).removeClass('active');
