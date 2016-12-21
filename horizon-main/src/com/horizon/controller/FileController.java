@@ -1,6 +1,7 @@
 package com.horizon.controller;
 
 import java.io.InputStream;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,18 +10,24 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +35,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.horizon.db.utils.HnTransactionManagerHelper;
+import com.horizon.model.Company;
+import com.horizon.model.Document;
 import com.horizon.model.HnJsonResponse;
+import com.horizon.resources.HnConstants;
+import com.horizon.resources.exception.HnException;
+import com.horizon.service.FileService;
+import com.horizon.validation.ValidationErrorBuilder;
 
 @RestController
 public class FileController {
@@ -41,12 +55,15 @@ public class FileController {
 	private CompanyService companyService;
 
 	@Autowired
-	private ProductService productService;
+	private ProductService productService;*/
 
 	@Autowired
-	HnTransactionManagerHelper transactionManager;*/
+	private FileService fileService;
 
-	@PostMapping(value = "/file/upload")
+	@Autowired
+	HnTransactionManagerHelper transactionManager;
+
+	/*@PostMapping(value = "/file/upload")
 	public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
 		String methodName = "uploadFile - ";
 		System.out.println(methodName + "inside uploadFile");
@@ -98,9 +115,113 @@ public class FileController {
 		}
 		return new ResponseEntity(jsonResponse, status);
 		//return "You successfully uploaded file=" + file.getOriginalFilename();
+	}*/
+
+
+	@PostMapping(value = "/file/upload")
+	public ResponseEntity uploadFile(@RequestParam("type") String idType,
+			@RequestParam("id") int id, @RequestParam("file") MultipartFile file) {
+		String methodName = "uploadFile - ";
+		logger.entry(methodName );
+		System.out.println(methodName);
+		HttpStatus status = HttpStatus.OK;
+		TransactionStatus txnStatus = null;
+		HnJsonResponse jsonResponse = new HnJsonResponse();
+
+		try {
+
+			System.out.println("id type - " + idType);
+			System.out.println("id - " + id);
+			txnStatus = transactionManager.getTrasaction();
+		//	comp = companyService.createCompany(company);
+
+
+			if (!file.isEmpty()) {
+				String fileName = file.getOriginalFilename();
+				InputStream inputStream = file.getInputStream();
+				//String mimeType= URLConnection.guessContentTypeFromName(fileName);
+				String mimeType = file.getContentType();
+				System.out.println("mimeType - " + mimeType);
+				int fileLength = inputStream.available()/1024; // conertinf into kb
+
+				Document document = new Document();
+				document.setDocument(inputStream);
+				document.setDocumentName(fileName);
+				document.setMimeType(mimeType);
+				document.setFileSize(fileLength);
+				document.setEnabled(1);
+				document.setUserID(1);
+				if (HnConstants.ID_TYPE_COMPANY.equals(idType)) {
+					document.setCompanyID(id);
+				}
+
+				fileService.createDocument(document);
+				jsonResponse.setStatus("SUCCESS");
+
+			} else  {
+				System.out.println("file is empty");
+			}
+			transactionManager.commit(txnStatus);
+
+
+		} catch (HnException e) {
+			transactionManager.rollback(txnStatus);
+			 jsonResponse.setStatus("ERROR");
+			 status = HttpStatus.INTERNAL_SERVER_ERROR;
+			// e.printStackTrace();
+			 System.out.println("HnException occured");
+			 System.out.println(e.getMessage());
+			 System.out.println(e.getLocalizedMessage());
+
+		}catch (Exception e) {
+			transactionManager.rollback(txnStatus);
+			 jsonResponse.setStatus("ERROR");
+			 status = HttpStatus.INTERNAL_SERVER_ERROR;
+			 System.out.println("Exception occured");
+			 System.out.println(e.getMessage());
+			 System.out.println(e.getLocalizedMessage());
+			// e.printStackTrace();
+		}
+		return new ResponseEntity(jsonResponse, status);
 	}
 
-	 @RequestMapping(value = {"/download" }, method = RequestMethod.GET)
+
+
+	@GetMapping("/file/list/{type}/{id}")
+	public ResponseEntity  getAllFiles(@PathVariable String type, @PathVariable int id) {
+		HnJsonResponse jsonResponse = new HnJsonResponse();
+		HttpStatus status = HttpStatus.OK;
+		 List<Document> fileList = null;
+		  try{
+			  String methodName = "getAllFiles - ";
+			  logger.entry(methodName);
+			  System.out.println(methodName);
+			  fileList = fileService.getAllFiles(type, id);
+			 System.out.println(methodName + fileList.size());
+
+			 for (Document document : fileList) {
+				 if (document.getMimeType() == null) {
+					 document.setMimeType("application/octet-stream");
+				 }
+				 String fileName = document.getDocumentName();
+				 String[] fileArr = fileName.split("\\.");
+				 document.setExtensionType(fileArr[fileArr.length-1]);
+			}
+
+			 jsonResponse.setStatus("SUCCESS");
+			 jsonResponse.setObject(fileList);
+			 logger.exit(methodName + fileList.size());
+
+		  }catch( Exception e){
+			  jsonResponse.setStatus("ERROR");
+			  status = HttpStatus.INTERNAL_SERVER_ERROR;
+			  e.printStackTrace();
+          }
+		  return new ResponseEntity(jsonResponse, status);
+	}
+
+
+	/* @RequestMapping(value = {"/download" }, method = RequestMethod.GET)
 		public ModelAndView product() {
 			System.out.println("inside product");
 			ModelAndView model = new ModelAndView();
@@ -109,7 +230,7 @@ public class FileController {
 			model.setViewName("download");
 			return model;
 
-		}
+		}*/
 
 	@GetMapping(value = "/file/download/attachment/{fileId}")
 	public ResponseEntity<byte[]> downloadFile(@PathVariable int fileId) {
@@ -155,7 +276,8 @@ public class FileController {
                 String type[]  = mimeType.split("/");
                 httpHeaders.setContentType(new MediaType(type[0], type[1]));
                 httpHeaders.setContentLength(document.length);
-                httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=" + fileName));
+               // httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=" + fileName));
+                httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
 
                 System.out.println("returned");
             }
@@ -219,7 +341,9 @@ public class FileController {
                 String type[]  = mimeType.split("/");
                 httpHeaders.setContentType(new MediaType(type[0], type[1]));
                 httpHeaders.setContentLength(document.length);
-                httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, String.format("inline; filename=\"" + fileName +"\""));
+               // httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, String.format("inline; filename=\"" + fileName +"\""));
+                httpHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "\"");
+
 
                 System.out.println("returned");
 
@@ -235,7 +359,28 @@ public class FileController {
           		.body(inputStream);*/
 	}
 
+	@DeleteMapping("/file/{id}")
+	public ResponseEntity deleteDocument(@PathVariable int id) {
+		String methodName = "deleteDocument - ";
+		logger.entry(methodName + "controller" + id);
+		System.out.println(methodName + "controller" + id);
+		HttpStatus status = HttpStatus.OK;
+		TransactionStatus txnStatus = null;
+		HnJsonResponse jsonResponse = new HnJsonResponse();
 
+		try {
+			 txnStatus = transactionManager.getTrasaction();
+			 fileService.deleteDocument(id);
+			 transactionManager.commit(txnStatus);
 
+			 jsonResponse.setStatus("SUCCESS");
+		} catch (Exception e) {
+			transactionManager.rollback(txnStatus);
+			 jsonResponse.setStatus("ERROR");
+			 status = HttpStatus.INTERNAL_SERVER_ERROR;
+			 e.printStackTrace();
+		}
+		return new ResponseEntity(jsonResponse, status);
+	}
 
 }

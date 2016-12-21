@@ -1,6 +1,28 @@
 var companytable;
 var rowNode;
+var obj = {
+	    "txt": "fa-file-text-o",
+	    "xls": "fa-file-excel-o",
+	    "xlam": "fa-file-excel-o",
+	    "xlsb": "fa-file-excel-o",
+	    "xltm": "fa-file-excel-o",
+	    "xlsm": "fa-file-excel-o",
+	    "xlsx": "fa-file-excel-o",
+	    "jpeg": "fa-file-image-o",
+	    "jpg": "fa-file-image-o",
+	    "png": "fa-file-image-o",
+	    "docx": "fa-file-word-o",
+	    "doc": "fa-file-word-o",
+	    "pdf": "fa-file-pdf-o"
+	};
+
 $(function () {
+
+
+	/*var kvArray = [["key1", "value1"], ["key2", "value2"]];
+	var myMap = new Map(kvArray);
+	alert(myMap.get("key1"));*/
+
 
 	/*$('#slidebarMenuCompany').on( 'click', function () {
 		$('#content2').hide();
@@ -56,8 +78,15 @@ $(function () {
 		$('.inputForm').hide();
 		$('#formModal-title').html("Uplaod Company Releated Files");
 		$('.FormvalidationError').empty();
+
 		var rowSelected = companytable.$('tr.active');
 		var index = companytable.row(rowSelected).index();
+
+		// hide file list table
+		var row =companytable.row(rowSelected);
+		 row.child.hide();
+		 rowSelected.removeClass('shown');
+
 		if (index >= 0) {
 		//	var rowData = companytable.row(index).data();
 			//var companyName =  rowData[1];
@@ -85,7 +114,15 @@ $(function () {
 
 			// company datatable row select and de-select
     		$('#companyData tbody').on( 'click', 'tr', function (e) {
+    			var isContinue = false;
+    			var custClass = $(this).closest('tr').attr('class');
     			var tdClass = $(e.target).attr("class");
+
+    			if (custClass !="custom-file-display-row" && custClass !="smalltable") {
+    				isContinue = true;
+    			}
+
+    			if (isContinue){
     			if ($.trim(tdClass) != "details-control") {
 
     				if ( $(this).hasClass('active') ) {
@@ -115,6 +152,7 @@ $(function () {
 
     				}
     			}
+    		}
 
     	    } );
 
@@ -246,6 +284,7 @@ $(function () {
     	       // dataType: 'json',
     			 replaceFileInput:false,
     			 autoUpload:false,
+    			 Type:'json',
     			 url:contextPath+"/file/upload",
     			 type:'POST',
 
@@ -263,6 +302,12 @@ $(function () {
     	        	// alert(data.files.length);
     	               	$('#companyFileUploadSubmitBtn').on( 'click', function (){
     	               		//alert("submit length - " + data.files.length);
+    	               		var selected = companytable.$('tr.active');
+    	               		var rowIndex = companytable.row(selected).index();
+    	               		var rowData = companytable.row(rowIndex).data();
+    	        			var companyID = rowData[0];
+    	               		//data.formData = {example: 'test', example2:'test123'};
+    	        			data.formData = {type: 'company', id: companyID};
     	                    data.submit();
     	                });
     	        },
@@ -272,9 +317,9 @@ $(function () {
     	            $('#compProgBarPercentage').text(progress + '%');
     	        },
     	        change: function (e, data) {
-    	        	 $.each(data.files, function (index, file) {
+    	        	 /*$.each(data.files, function (index, file) {
     	        	   //     console.log('Selected file: ' + file.name);
-    	        	    });
+    	        	    });*/
     	        },
     	        done: function (e, data) {
     	           //data.context.text('Upload finished.');
@@ -284,10 +329,72 @@ $(function () {
     	        	$('#uploadFileCompanyForm')[0].reset();
     	        	$('#companyInputFile1').val('');
 
+    	        	if(data.result.status =="SUCCESS") {
+
+    	        	}
+
+    	        },
+    	        fail:function (e, data) {
+    	        	alert("failed to upload file")
     	        }
 
     	    });
 
+
+    		// Add event listener for opening and closing details
+    	    $('#companyData tbody').on('click', 'td.details-control', function () {
+    	        var tr = $(this).closest('tr');
+    	        var row = companytable.row( tr );
+
+    	        if ( row.child.isShown() ) {
+    	            // This row is already open - close it
+    	            row.child.hide();
+    	            tr.removeClass('shown');
+    	        }
+    	        else {
+    	        	// custom implementation
+    	        	var rowData = row.data();
+    	        	var companyID = rowData[0];
+
+    	            // Open this row
+    	        	var res = format(companyID, function(result) {
+    	        		var result = addFiles(result.object);
+    	        		 row.child( result ).show();
+    	        		$(row.child()).addClass('smalltable');
+    	        		 tr.addClass('shown');
+    	        	});
+    	        }
+    	    } );
+
+
+    	/*    $('#companyData > #customFileDisplayTable tbody').on('click', 'tr', function () {
+    	    		alert("clicked");
+    	    });
+*/
+    	    $('#companyData tbody ').on('click', 'tr.smalltable td > i.fa-trash', function () {
+    	    	  var tr = $(this).closest('tr');
+    	    	  var fileID = tr.attr("fileID");
+
+      			var request = $.ajax({
+     				 url: contextPath+"/file/"+fileID,
+     				 method: "DELETE"
+
+     				}).done(function(res) {
+                         if(res.status==="SUCCESS"){
+                        	 tr.remove();
+                         }else{
+                      	   alert("failed");
+                         	 for(var key in res.errorsMap){
+                              }
+                         }
+                     }).fail(function(data){
+                  	   alert("failed internal error");
+                     });
+
+    	    });
+
+
+    		// ending *onload*
 
   });
 
@@ -340,25 +447,13 @@ function loadCompanies(){
         	alert("company retrieve failed");
         });
 
-
-	// Add event listener for opening and closing details
-	    $('#companyData tbody').on('click', 'td.details-control', function () {
-	        var tr = $(this).closest('tr');
-	        var row = companytable.row( tr );
-
-	        if ( row.child.isShown() ) {
-	            // This row is already open - close it
-	            row.child.hide();
-	            tr.removeClass('shown');
-	        }
-	        else {
-	            // Open this row
-	            row.child( format("test") ).show();
-	            tr.addClass('shown');
-	        }
-	    } );
-
 }
+
+
+
+
+
+
 
 //add single company row  to datatable
 function addCompanyData(company) {
@@ -438,24 +533,96 @@ function addCompanyProducts(products) {
 		});
 }
 
-/* Formatting function for row details - modify as you need */
-function format ( d ) {
+
+/*function format ( companyID ) {
+
     // `d` is the original data object for the row
-    return '<table class="table table-bordered display" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-        '<tr>'+
-            '<td>Full name:</td>'+
-            '<td>sanjeev</td>'+
+    return '<table class="table table-bordered display" id="customFileDisplayTable" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr class="custom-file-display-row">'+
+            '<td>101</td>'+
+            '<td><a target="_blank" href="/shop/file/download/inline/136"><i class="fa fa-file-pdf-o"></i> file name </a></td>'+
+            '<td>documenttype</td>'+
+            '<td>updated</td>'+
+            '<td>size</td>'+
+            '<td><a href="/shop/file/download/attachment/136"><i class="fa fa-download"></i></a></td>'+
+            '<td><i class="fa fa-trash"></i></td>'+
         '</tr>'+
-        '<tr>'+
-            '<td>Extension number:</td>'+
-            '<td>1234</td>'+
-        '</tr>'+
-        '<tr>'+
-            '<td>Extra info:</td>'+
-            '<td>And any further details here (images etc)...</td>'+
-        '</tr>'+
+
+        '<tr class="custom-file-display-row">'+
+        '<td>101</td>'+
+        '<td><a href="#"><i class="fa fa-file-image-o"></i> file name dsaddsadaadasdasd</a></td>'+
+        '<td>documenttype</td>'+
+        '<td>updated</td>'+
+        '<td>size</td>'+
+        '<td><i class="fa fa-download"></i></td>'+
+        '<td><i class="fa fa-trash"></i></td>'+
+    '</tr>'+
     '</table>';
+
 }
+*/
+
+function format ( companyID, callback ) {
+	// get the uploaded files related company
+	var request = $.ajax({
+			 url: contextPath+"/file/list/company/"+companyID,
+			 method: "GET"
+
+			}).done(callback)/*(function(res) {
+               if(res.status==="SUCCESS"){
+            		alert("after ajax success")
+            	  // var result = addFiles(res.object);
+            	  // return result;
+               }else{
+            	   alert("failed to list the file contents");
+               }
+
+           })*/.fail(function(data){
+        	   alert("failed to list the file contents");
+           });
+}
+
+function addFiles ( files ) {
+
+	var rowElement="";
+	 $.each(files, function(idx, document) {
+		 var temp  = '<tr class="custom-file-display-row" fileID='+document.documentID+'>'+
+         '<td><a target="_blank" href="'+contextPath+'/file/download/inline/'+document.documentID+'"><i class="fa '+ getProperty(document.extensionType) +'"></i> '+document.documentName+'</a></td>'+
+         '<td>'+document.documentTypeID+'</td>'+
+         '<td>'+document.lastUpdateTS+'</td>'+
+         '<td>'+document.fileSize+'</td>'+
+         '<td><a href="'+contextPath+'/file/download/attachment/'+document.documentID+'"><i class="fa fa-download"></i></a></td>'+
+         '<td><i class="fa fa-trash"></i></td>'+
+     '</tr>'
+
+         rowElement = rowElement.concat(temp);
+	 });
+
+	 return '<table class="table table-bordered display" id="customFileDisplayTable" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+	 '<tr id="custom-file-display-heading" class="custom-file-display-row">'+
+	 '<td>Name</td>'+
+	 '<td>DocType</td>'+
+	 '<td>Updated</td>'+
+	 '<td>Size</td>'+
+	 '<td></td>'+
+	 '<td></td>'+
+	 '</tr>'+
+	 rowElement+'</table>';
+}
+
+
+var getProperty = function (propertyName) {
+    var res =  obj[propertyName.toLowerCase()];
+    if (res == undefined) {
+    	res="fa-file-o";
+    }
+    return res;
+
+   // console.log(getProperty("key1"));
+	//console.log(getProperty("key2"));
+
+};
+
 
 $( window ).load(function() {
 	$('#slidebarMenuCompany').addClass("active");

@@ -5,3 +5,18 @@ td.details-control {
 tr.shown td.details-control {
     background: url('../zmycustomimages/details_close.png') no-repeat center center;
 }
+
+#customFileDisplayTable a {
+  color:inherit;
+  text-decoration: none;
+ }
+
+.fa-download:hover, .fa-trash:hover{
+color:#367fa9;
+}
+
+
+
+tr#custom-file-display-heading td {
+color:#b3b3b3;
+}
