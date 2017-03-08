@@ -479,16 +479,20 @@ function updateCompanyData(company , index) {
 	            company.createTS,
 	            company.lastUpdateTS
 	        ] ).draw( false );
+
+	$('.myCustomButton').hide();
+    $('#companyCreateBtn').show();
+    $('#companyData tr').removeClass('active');
 }
 
 //delete single company row  in datatable
 function deleteCompanyData(index) {
 	var rowNode  = companytable.row(index).remove().draw(false);
 	var selectedClass = $("#companyData > tbody > tr").find("td").attr("class");
-	if (selectedClass == "dataTables_empty") {
+//	if (selectedClass == "dataTables_empty") {
 		$('.myCustomButton').hide();
         $('#companyCreateBtn').show();
-	}
+//	}
 }
 
 function loadProductData(companyID) {

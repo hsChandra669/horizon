@@ -291,6 +291,7 @@ desired effect
         <!-- Optionally, you can add icons to the links -->
         <li id="slidebarMenuCompany" class="menuclass" onclick="location.href='<%=request.getContextPath()%>/company'"><a href="#"><i class="fa fa-link"></i> <span>Company</span></a></li>
         <li id="slidebarMenuProduct" class="menuclass" onclick="location.href='<%=request.getContextPath()%>/product'"><a href="#"><i class="fa fa-link"></i> <span>Product</span></a></li>
+        <li id="slidebarMenuService" class="menuclass" onclick="location.href='<%=request.getContextPath()%>/service'"><a href="#"><i class="fa fa-link"></i> <span>Service</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
             <span class="pull-right-container">

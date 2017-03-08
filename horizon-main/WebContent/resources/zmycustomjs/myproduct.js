@@ -26,7 +26,43 @@ $(function () {
 
 
 	// company datatable row select and de-select
-	$('#productData tbody').on( 'click', 'tr', function () {
+	// service datatable row select and de-select
+	$('#productData tbody').on( 'click', 'tr', function (e) {
+		var isContinue = false;
+		var custClass = $(this).closest('tr').attr('class');
+		var tdClass = $(e.target).attr("class");
+
+		if (custClass !="custom-file-display-row" && custClass !="smalltable") {
+			isContinue = true;
+		}
+
+		if (isContinue){
+		if ($.trim(tdClass) != "details-control") {
+
+			if ( $(this).hasClass('active') ) {
+				$(this).removeClass('active');
+				// show create button and hide edit and delete button button
+				$('.myCustomButton').hide();
+				$('#productCreateBtn').show();
+			}
+			else {
+				productTable.$('tr.active').removeClass('active');
+				var selectedClass = $(this).find("td").attr("class");
+				if (selectedClass != "dataTables_empty") {
+					$(this).addClass('active');
+					// show edit and delete buttonds and hide create button
+					$('.myCustomButton').hide();
+					$('#productEditBtn').show();
+					$('#productDeleteBtn').show();
+				}
+
+			}
+		}
+	}
+
+    });
+
+	/*$('#productData tbody').on( 'click', 'tr', function () {
         if ( $(this).hasClass('active') ) {
             $(this).removeClass('active');
         }
@@ -35,7 +71,7 @@ $(function () {
             $(this).addClass('active');
 
         }
-    } );
+    } );*/
 
 
 //loading companies for create product form
@@ -262,11 +298,17 @@ function updateProductData(product , index) {
 	               product.createTS,
 	               product.lastUpdateTS
 	        ] ).draw( false );
+
+	$('.myCustomButton').hide();
+    $('#productCreateBtn').show();
+    $('#productData tr').removeClass('active');
 }
 
 //delete single company row  in datatable
 function deleteProductData(index) {
 	var rowNode  = productTable.row(index).remove().draw(false);
+	$('.myCustomButton').hide();
+    $('#productCreateBtn').show();
 }
 
 function loadCompaniesforCreateProductForm() {

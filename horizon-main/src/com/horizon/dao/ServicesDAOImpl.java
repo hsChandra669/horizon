@@ -11,13 +11,12 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.horizon.dao.rowmapper.ProductRowMapper;
 import com.horizon.dao.rowmapper.ServicesRowMapper;
-import com.horizon.model.Product;
 import com.horizon.model.Services;
 
 @Repository("servicesDAO")
@@ -38,12 +37,17 @@ public class ServicesDAOImpl implements ServicesDAO{
 	private static final String GET_ALL_QUERY = "SELECT SERVICE_ID, SERVICE_NAME, SERVICE_TYPE, ENABLED, CREATED_BY,"
 			+ " CREATED_ON, LAST_UPDATED_ON FROM SERVICES";
 
-	private static final String GET_BY_NAME_QUERY = "SELECT SERVICE_ID, SERVICE_TYPE,CREATED_BY, CREATED_ON,  LAST_UPDATED_ON FROM SERVICES"
+	private static final String GET_BY_NAME_QUERY = "SELECT SERVICE_ID, SERVICE_NAME, SERVICE_TYPE,ENABLED, CREATED_BY, CREATED_ON,  LAST_UPDATED_ON FROM SERVICES"
 			+ "  WHERE SERVICE_NAME = :serviceName";
 
 	private static final String INSERT_QUERY = "INSERT INTO SERVICES "
 			+ " (SERVICE_NAME, SERVICE_TYPE, ENABLED, CREATED_BY, CREATED_ON, LAST_UPDATED_ON) "
 			+ "VALUES(:serviceName, :serviceType, :enabled, :createdBy, :createTS, :lastUpdateTS)";
+
+	private static final String UPDATE_QUERY = "UPDATE SERVICES SET SERVICE_NAME = :serviceName, SERVICE_TYPE = :serviceType,"
+			+ " LAST_UPDATED_ON = :lastUpdateTS where SERVICE_ID = :serviceID";
+
+	private static final String DELETE_QUERY = "DELETE FROM  SERVICES  WHERE SERVICE_ID= :serviceID";
 
 	@Override
 	public void create(Services service) {
@@ -63,14 +67,24 @@ public class ServicesDAOImpl implements ServicesDAO{
 	}
 
 	@Override
-	public void update(Services product) {
-		// TODO Auto-generated method stub
+	public void update(Services service) {
+		String methodName = "update ";
+		logger.info(methodName + service);
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("serviceName", service.getServiceName());
+		parameters.put("serviceType", service.getServiceType());
+		long milisec = Calendar.getInstance().getTimeInMillis();
+		parameters.put("lastUpdateTS", new Timestamp(milisec));
+		parameters.put("serviceID", service.getServiceID());
 
+		namedParameterJdbcTemplate.update(UPDATE_QUERY, parameters);
 	}
 
 	@Override
-	public void delete(int productID) {
-		// TODO Auto-generated method stub
+	public void delete(int serviceID) {
+		String methodName = "delete(int)";
+		Map<String, Integer> namedParams = Collections.singletonMap("serviceID", serviceID);
+		this.namedParameterJdbcTemplate.update(DELETE_QUERY, namedParams);
 
 	}
 
@@ -82,7 +96,7 @@ public class ServicesDAOImpl implements ServicesDAO{
 
 	@Override
 	public List<Services> getAllServices() {
-		String methodName = "getAllCompanies()";
+		String methodName = "getAllServices()";
 		logger.debug(methodName, "QUERY: Executing - " + GET_ALL_QUERY);
 		ServicesRowMapper mapper = new ServicesRowMapper();
 		List<Services> servicesList = new ArrayList<Services>();
@@ -93,17 +107,20 @@ public class ServicesDAOImpl implements ServicesDAO{
 
 	@Override
 	public Services getByServiceName(String name) {
-		String methodName = "getByProductName(name) - ";
+		String methodName = "getByServiceName(name) - ";
 		logger.entry(methodName + name);
 		Services service = null;
-		Map<String, String> namedParams = Collections.singletonMap("productName", name);
+		try {
+		Map<String, String> namedParams = Collections.singletonMap("serviceName", name);
 		ServicesRowMapper mapper = new ServicesRowMapper();
 		logger.debug(methodName, "mapper - ", namedParams);
 		service = this.namedParameterJdbcTemplate.queryForObject(GET_BY_NAME_QUERY, namedParams, mapper);
 		logger.debug(methodName, "QUERY: Executed ", service);
+		} catch (IncorrectResultSizeDataAccessException e) {
+			service = null;
+			// TODO: handle exception
+		}
 		return service;
 	}
 
-
-	
 }

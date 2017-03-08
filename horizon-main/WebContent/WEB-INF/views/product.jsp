@@ -295,6 +295,7 @@ desired effect
         <!-- Optionally, you can add icons to the links -->
         <li id="slidebarMenuCompany" class="menuclass" onclick="location.href='<%=request.getContextPath()%>/company'"><a href="#"><i class="fa fa-link"></i> <span>Company</span></a></li>
         <li id="slidebarMenuProduct" class="menuclass" onclick="location.href='<%=request.getContextPath()%>/product'"><a href="#"><i class="fa fa-link"></i> <span>Product</span></a></li>
+        <li id="slidebarMenuService" class="menuclass" onclick="location.href='<%=request.getContextPath()%>/service'"><a href="#"><i class="fa fa-link"></i> <span>Service</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
             <span class="pull-right-container">
@@ -469,9 +470,9 @@ desired effect
               <h3 class="box-title">Product Details</h3>
               <div class="box-footer clearfix no-border">
              <!--  <button style="margin-right: 5px;" type="button" class="btn btn-default pull-left" data-toggle="modal" data-target="#companyCreateModal"><i class="fa fa-plus"></i> Add item</button> -->
-              <button style="margin-right: 5px;" type="button" id="productCreateBtn" class="btn btn-default pull-left"><i class="fa fa-plus"></i> Add Product</button>
-              <button style="margin-right: 5px;" type="button" id="productEditBtn" class="btn btn-default pull-left"><i class="fa fa-pencil"></i> Edit Product</button>
-              <button type="button" class="btn btn-default pull-left" id="productDeleteBtn"><i class="fa  fa-trash"></i> Delete Product</button>
+              <button style="margin-right: 5px;" type="button" id="productCreateBtn" class="btn btn-default pull-left, myCustomButton"><i class="fa fa-plus"></i> Add Product</button>
+              <button style="margin-right: 5px; display: none" type="button" id="productEditBtn" class="btn btn-default pull-left, myCustomButton"><i class="fa fa-pencil"></i> Edit Product</button>
+              <button style="display: none" type="button" class="btn btn-default pull-left, myCustomButton" id="productDeleteBtn"><i class="fa  fa-trash"></i> Delete Product</button>
             </div>
             </div>
             <!-- /.box-header -->

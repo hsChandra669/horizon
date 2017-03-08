@@ -18,7 +18,7 @@ public class KnLoginController {
 
 		ModelAndView model = new ModelAndView();
 		model.addObject("title", "Spring Security Custom Login Form");
-		model.addObject("message", "This is welcome page!");
+		model.addObject("message", "This is dashboard page!");
 		model.setViewName("dashboard");
 		return model;
 
@@ -29,8 +29,19 @@ public class KnLoginController {
 		System.out.println("inside product");
 		ModelAndView model = new ModelAndView();
 		model.addObject("title", "Spring Security Custom Login Form");
-		model.addObject("message", "This is welcome page!");
+		model.addObject("message", "This is product page!");
 		model.setViewName("product");
+		return model;
+
+	}
+
+	@RequestMapping(value = {"/service" }, method = RequestMethod.GET)
+	public ModelAndView service() {
+		System.out.println("inside service");
+		ModelAndView model = new ModelAndView();
+		model.addObject("title", "Spring Security Custom Login Form");
+		model.addObject("message", "This is product page!");
+		model.setViewName("service");
 		return model;
 
 	}
@@ -40,7 +51,7 @@ public class KnLoginController {
 		System.out.println("inside company");
 		ModelAndView model = new ModelAndView();
 		model.addObject("title", "Spring Security Custom Login Form");
-		model.addObject("message", "This is welcome page!");
+		model.addObject("message", "This is company page!");
 		model.setViewName("company");
 		return model;
 

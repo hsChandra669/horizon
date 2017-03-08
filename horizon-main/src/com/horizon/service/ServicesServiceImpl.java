@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.horizon.dao.CompanyDAO;
 import com.horizon.dao.ServicesDAO;
-import com.horizon.model.Company;
 import com.horizon.model.Services;
+import com.horizon.resources.exception.HnException;
+
 
 @Service ("servicesService")
 public class ServicesServiceImpl implements ServicesService{
@@ -19,16 +19,37 @@ public class ServicesServiceImpl implements ServicesService{
 
 
 	@Override
-	public Services createServices(Services service) {
-		// TODO Auto-generated method stub
+	public Services createServices(Services service) throws HnException {
+		Services dbService = servicesDAO.getByServiceName(service.getServiceName());
+		if (dbService != null) {
+			System.out.println("Service already exist");
+			throw new HnException("Service.already.exist");
+		}
+
+		service.setEnabled(1);
+		service.setCreatedBy(1);
 		servicesDAO.create(service);
-		return service;
+		dbService = servicesDAO.getByServiceName(service.getServiceName());
+
+		return dbService;
 	}
 
 	@Override
 	public List<Services> getAllServices() {
-		// TODO Auto-generated method stub
 		return servicesDAO.getAllServices();
+	}
+
+	@Override
+	public Services updateServices(Services service) {
+		Services dbService;
+		servicesDAO.update(service);
+		dbService = servicesDAO.getByServiceName(service.getServiceName());
+		return dbService;
+	}
+
+	@Override
+	public void deleteServices(int serviceID) {
+		servicesDAO.delete(serviceID);
 	}
 
 }

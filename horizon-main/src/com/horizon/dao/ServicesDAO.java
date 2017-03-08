@@ -2,7 +2,6 @@ package com.horizon.dao;
 
 import java.util.List;
 
-import com.horizon.model.Company;
 import com.horizon.model.Services;
 
 public interface ServicesDAO {

@@ -5,20 +5,25 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.horizon.db.utils.HnTransactionManagerHelper;
-import com.horizon.model.Product;
+import com.horizon.model.HnJsonResponse;
 import com.horizon.model.Services;
-import com.horizon.service.CompanyService;
-import com.horizon.service.ProductService;
+import com.horizon.resources.exception.HnException;
 import com.horizon.service.ServicesService;
+import com.horizon.validation.ValidationErrorBuilder;
 
 @RestController
 public class SrvicesRestController {
@@ -26,79 +31,140 @@ public class SrvicesRestController {
 
 	@Autowired
 	private ServicesService servicesService;
-	
+
+	 @Autowired
+	 private MessageSource messageSource;
 
 	@Autowired
 	HnTransactionManagerHelper transactionManager;
 
 	@GetMapping("/services/list")
-	public List  getAllServices() {
+	public ResponseEntity  getAllServices() {
+		HnJsonResponse jsonResponse = new HnJsonResponse();
+		HttpStatus status = HttpStatus.OK;
 		 List<Services> list = null;
 		  try{
 			  String methodName = "getAllServices - ";
 			  logger.entry(methodName);
-			  System.out.println(methodName);
 			 list =  servicesService.getAllServices();
-			  System.out.println(methodName + list.size());
-			  logger.exit(methodName + list.size());
+			 System.out.println(methodName + list.size());
+
+			 jsonResponse.setStatus("SUCCESS");
+			 jsonResponse.setObject(list);
+			 logger.exit(methodName + list.size());
 
 		  }catch( Exception e){
+			  jsonResponse.setStatus("ERROR");
+			  status = HttpStatus.INTERNAL_SERVER_ERROR;
 			  e.printStackTrace();
           }
-		  return list;
+		  return new ResponseEntity(jsonResponse, status);
 	}
 
 	@PostMapping(value = "/services/create")
-	//@RequestMapping(value = "/companies/create", headers= {"content-type=application/json"})
-	public ResponseEntity createService(@RequestBody Services services) {
+	public ResponseEntity createService(@Validated @RequestBody Services service, BindingResult bindingResult) {
 		String methodName = "createService - ";
+		logger.entry(methodName + service);
+		Services serv = null;
+		HttpStatus status = HttpStatus.OK;
+		TransactionStatus txnStatus = null;
+		HnJsonResponse jsonResponse = new HnJsonResponse();
+
+		try {
+
+			 if(bindingResult.hasErrors()){
+		         jsonResponse.setErrorsMap(ValidationErrorBuilder.populateErrorMap(bindingResult, messageSource));
+		         jsonResponse.setStatus("ERROR");
+
+			 } else {
+				 txnStatus = transactionManager.getTrasaction();
+				 serv = servicesService.createServices(service);
+				 transactionManager.commit(txnStatus);
+
+				System.out.println(methodName   + serv);
+
+				jsonResponse.setStatus("SUCCESS");
+				jsonResponse.setObject(serv);
+				logger.exit(methodName +  serv  );
+			 }
+
+
+		} catch (HnException e) {
+			transactionManager.rollback(txnStatus);
+			 jsonResponse.setStatus("ERROR");
+			 status = HttpStatus.INTERNAL_SERVER_ERROR;
+			 e.printStackTrace();
+
+		}catch (Exception e) {
+			transactionManager.rollback(txnStatus);
+			 jsonResponse.setStatus("ERROR");
+			 status = HttpStatus.INTERNAL_SERVER_ERROR;
+			 e.printStackTrace();
+		}
+		return new ResponseEntity(jsonResponse, status);
+	}
+
+
+	@PostMapping(value = "/services/update")
+	public ResponseEntity updateService(@Validated @RequestBody Services services, BindingResult bindingResult) {
+		String methodName = "updateCustomer - ";
 		logger.entry(methodName + services);
 		System.out.println(methodName + services);
 		Services serv = null;
 		HttpStatus status = HttpStatus.OK;
 		TransactionStatus txnStatus = null;
-		try {
-			txnStatus = transactionManager.getTrasaction();
-			serv = servicesService.createServices(services);
-			transactionManager.commit(txnStatus);
+		HnJsonResponse jsonResponse = new HnJsonResponse();
 
-			System.out.println(methodName   + serv);
-			logger.exit(methodName +  serv  );
+		try {
+
+			 if(bindingResult.hasErrors()){
+		         jsonResponse.setErrorsMap(ValidationErrorBuilder.populateErrorMap(bindingResult, messageSource));
+		         jsonResponse.setStatus("ERROR");
+
+			 } else {
+				 txnStatus = transactionManager.getTrasaction();
+				 serv = servicesService.updateServices(services);
+				transactionManager.commit(txnStatus);
+
+				jsonResponse.setStatus("SUCCESS");
+				jsonResponse.setObject(serv);
+				logger.exit(methodName +  serv  );
+			 }
+
 
 		} catch (Exception e) {
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
 			transactionManager.rollback(txnStatus);
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-			e.printStackTrace();
+			 jsonResponse.setStatus("ERROR");
+			 status = HttpStatus.INTERNAL_SERVER_ERROR;
+			 e.printStackTrace();
 		}
-		return new ResponseEntity(serv, HttpStatus.OK);
+		return new ResponseEntity(jsonResponse, status);
 	}
-	
 
+	@DeleteMapping("/services/{id}")
+	public ResponseEntity deleteService(@PathVariable int id) {
+		String methodName = "deleteService - ";
+		logger.entry(methodName + "controller" + id);
+		System.out.println(methodName + "controller" + id);
+		HttpStatus status = HttpStatus.OK;
+		TransactionStatus txnStatus = null;
+		HnJsonResponse jsonResponse = new HnJsonResponse();
 
-	/*@DeleteMapping("/companies/{id}")
-	public ResponseEntity deleteCustomer(@PathVariable Long id) {
+		try {
+			 txnStatus = transactionManager.getTrasaction();
+			 servicesService.deleteServices(id);
+			 transactionManager.commit(txnStatus);
 
-		if (null == companyDAO.delete(id)) {
-			return new ResponseEntity("No Customer found for ID " + id, HttpStatus.NOT_FOUND);
+			 jsonResponse.setStatus("SUCCESS");
+		} catch (Exception e) {
+			transactionManager.rollback(txnStatus);
+			 jsonResponse.setStatus("ERROR");
+			 status = HttpStatus.INTERNAL_SERVER_ERROR;
+			 e.printStackTrace();
 		}
-
-		return new ResponseEntity(id, HttpStatus.OK);
-
-	}*/
-
-	/*@PutMapping("/companies/{id}")
-	public ResponseEntity updateCustomer(@PathVariable Long id, @RequestBody Company customer) {
-
-		customer = companyDAO.update(id, customer);
-
-		if (null == customer) {
-			return new ResponseEntity("No Customer found for ID " + id, HttpStatus.NOT_FOUND);
-		}
-
-		return new ResponseEntity(customer, HttpStatus.OK);
+		return new ResponseEntity(jsonResponse, status);
 	}
-*/
+
 
 
 }

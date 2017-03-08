@@ -287,7 +287,7 @@ desired effect
         <!-- Optionally, you can add icons to the links -->
         <li id="slidebarMenuCompany" class="menuclass" onclick="location.href='<%=request.getContextPath()%>/company'"><a href="#"><i class="fa fa-link"></i> <span>Company</span></a></li>
         <li id="slidebarMenuProduct" class="menuclass" onclick="location.href='<%=request.getContextPath()%>/product'"><a href="#"><i class="fa fa-link"></i> <span>Product</span></a></li>
-       	<li id="slidebarMenuService" class="menuclass" onclick="location.href='<%=request.getContextPath()%>/service'"><a href="#"><i class="fa fa-link"></i> <span>Service</span></a></li>
+      	<li id="slidebarMenuService" class="menuclass" onclick="location.href='<%=request.getContextPath()%>/service'"><a href="#"><i class="fa fa-link"></i> <span>Service</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
             <span class="pull-right-container">
@@ -323,9 +323,204 @@ desired effect
     </section>
 
 
-    <section class="content" id="productContent">
+   <!-- Main content -->
+    <section class="content" id="companycontent1">
 
-    	<h3>Dashboard content should go here</h3>
+      <div class="row">
+        <div class="col-xs-12">
+
+
+<!-- TODO contents starts from here -->
+
+
+  <!-- Modal -->
+
+  <!-- ALL forms should go inside this -->
+   <div class="modal fade" id="formeModal" data-backdrop="static" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="formModal-title"></h4>
+        </div>
+
+         <!--  <p>Some text in the modal.</p> -->
+           <div class="box box-primary">
+        <!--    TODO i commented -->
+            <!-- <div class="box-header with-border">
+              <h3 class="box-title">Quick Example</h3>
+            </div> -->
+            <!-- /.box-header -->
+
+            <!-- create service form start -->
+            <form role="form" id="createServiceForm" class="inputForm">
+              <div class="box-body">
+
+              <!-- holds validation error -->
+              <div class="FormvalidationError">
+              <!-- <span style="display:block;">one</span>-->
+              </div>
+                <div class="form-group">
+                  <label for="serviceName">Service Name</label>
+                  <input type="text" class="form-control" id="serviceName" placeholder="Enter Service name">
+                </div>
+                 <div class="form-group">
+                  <label for="servicetype">Service Type</label>
+                  <input type="text" class="form-control" id="servicetype" placeholder="Enter Service Type">
+                </div>
+              </div>
+
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="button" id="createServiceSubmitBtn" class="btn btn-primary">Submit</button>
+               <!--  <button type="button" class="btn btn-primary">Close</button> -->
+              </div>
+            </form>
+             <!-- create company form end  -->
+
+               <!-- edit company form start -->
+            <form role="form" id="editServiceForm" class="inputForm">
+              <div class="box-body">
+               <div class="FormvalidationError">
+              </div>
+                <div class="form-group">
+                  <label for="serviceName">Service Name</label>
+                  <input type="text" class="form-control" id="editFormServiceNameId" placeholder="Enter Service Name" readonly>
+                </div>
+                 <div class="form-group">
+                  <label for="servicetype">Service Type</label>
+                  <input type="text" class="form-control" id="editFormServicetypeId" placeholder="Enter Service type">
+                </div>
+
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="button" id="editServiceSubmitBtn" class="btn btn-primary">Submit</button>
+               <!--  <button type="button" class="btn btn-primary">Close</button> -->
+              </div>
+            </form>
+
+          </div>
+
+        </div>
+        <!-- TODO -->
+       <!--  <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div> -->
+      </div>
+
+    </div>
+
+          <!-- /.box -->
+
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Service Details</h3>
+              <div class="box-footer clearfix no-border">
+              <button style="margin-right: 5px;" type="button" id="serviceCreateBtn" class="btn btn-default pull-left, myCustomButton"><i class="fa fa-plus"></i> Add Service</button>
+              <button style="margin-right: 5px; display: none" type="button" id="serviceEditBtn" class="btn btn-default pull-left, myCustomButton" ><i class="fa fa-pencil"></i> Edit Service</button>
+              <button style="display: none" type="button" class="btn btn-default pull-left, myCustomButton" id="serviceDeleteBtn"><i class="fa  fa-trash"></i> Delete Service</button>
+             <!--  <button style="display: none" type="button" class="btn btn-default pull-left, myCustomButton" id="companyUploadFileBtn"><i class="fa  fa-upload"></i> Upload Files</button> -->
+            </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="serviceData" class="table table-bordered table-striped display">
+
+                <thead>
+                <tr>
+                  <th>Service Id</th>
+                  <th>Service Name</th>
+                  <th>Service Type</th>
+                  <th>Creation Time</th>
+                  <th>Last Updated Time</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+               <!--  <tr>
+                  <td>Misc</td>
+                  <td>NetFront 3.1</td>
+                  <td>Embedded devices</td>
+                  <td>-</td>
+                  <td>C</td>
+                </tr> -->
+
+                </tbody>
+
+                <tfoot>
+                <tr>
+                   <th>Service Id</th>
+                  <th>Service Name</th>
+                  <th>Service Type</th>
+                  <th>Creation Time</th>
+                  <th>Last Updated Time</th>
+                </tr>
+                </tfoot>
+
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+          <!-- product details associated with company contents starts from here -->
+
+          <!-- /.box -->
+          <div class="box" id="boxCompanyProductData" hidden>
+            <div class="box-header">
+              <h3 class="box-title">Product Details</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="companyProductData" class="table table-bordered table-striped display">
+
+                <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Product Type</th>
+                  <th>Creation Time</th>
+                  <th>Last Updated Time</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+               <!--  <tr>
+                  <td>Misc</td>
+                  <td>NetFront 3.1</td>
+                  <td>Embedded devices</td>
+                  <td>-</td>
+                  <td>C</td>
+                </tr> -->
+
+                </tbody>
+
+                <tfoot>
+                <tr>
+                 <th>Product Name</th>
+                  <th>Product Type</th>
+                  <th>Creation Time</th>
+                  <th>Last Updated Time</th>
+                </tr>
+                </tfoot>
+
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+
+
+          </div>
+        </div>
+        <!-- /.col -->
 
       <!-- /.row -->
     </section>
@@ -447,11 +642,12 @@ desired effect
 <spring:url value="/resources/plugins/datatables/dataTables.bootstrap.min.js" var="dataTablesbootstrapminjs" />
 <script src="${dataTablesbootstrapminjs}"></script>
 
+<spring:url value="/resources/zmycustomjs/myservice.js" var="myservicejs" />
+<script src="${myservicejs}"></script>
+
 <spring:url value="/resources/zmycustomjs/mycommon.js" var="mycommonjs" />
 <script src="${mycommonjs}"></script>
 
-<spring:url value="/resources/zmycustomjs/mydashboard.js" var="mydashboardjs" />
-<script src="${mydashboardjs}"></script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
